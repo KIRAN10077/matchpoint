@@ -41,17 +41,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
             const SizedBox(height: 120),
       Image.asset(
         'assets/images/matchpoint_logo_final.png',
-        height: 160,
+        height: 100,
       ),
       const SizedBox(height: 10),
       Text(
         "MatchPoint",
         style: GoogleFonts.audiowide(
-          fontSize: 32,
+          fontSize: 22,
           color: const Color.fromARGB(255, 0, 0, 0),
         ),
       ),
-      const SizedBox(height: 30),
+      const SizedBox(height: 15),
     Row(
   mainAxisAlignment: MainAxisAlignment.center,
   children: [
