@@ -133,7 +133,7 @@ SizedBox(height: 16,),
       controller: _passwordController,
       obscureText: _obscurePassword,
       decoration: InputDecoration(
-        labelText: "Password",
+        labelText: "Create a Password",
         hintText: "Enter your password",
         prefixIcon: const Icon(Icons.lock),
         filled: true,
