@@ -57,7 +57,7 @@ child: Column(
                 children:  [
                   Column(
                     children: [
-                      SizedBox(height: MediaQuery.of(context).size.height*0.3,
+                      SizedBox(height: MediaQuery.of(context).size.height*0.38,
                       child:Image.asset('assets/images/image1_onboarding.jpg', fit: BoxFit.contain),
                       ),
 
@@ -81,8 +81,8 @@ child: Column(
                   //page2
                   Column(
                     children: [
-                      SizedBox(height: MediaQuery.of(context).size.height*0.35,
-                      child:Image.asset('assets/images/image1_onboarding.jpg', fit: BoxFit.contain),
+                      SizedBox(height: MediaQuery.of(context).size.height*0.38,
+                      child:Image.asset('assets/images/image2_onboarding.png', fit: BoxFit.contain),
                       ),
 
                       SizedBox(height: 20,),
@@ -104,8 +104,8 @@ child: Column(
                   //page3
                   Column(
                     children: [
-                      SizedBox(height: MediaQuery.of(context).size.height*0.35,
-                      child:Image.asset('assets/images/image1_onboarding.jpg', fit: BoxFit.contain),
+                      SizedBox(height: MediaQuery.of(context).size.height*0.38,
+                      child:Image.asset('assets/images/image3_onboarding.jpg', fit: BoxFit.contain),
                       ),
 
                       SizedBox(height: 20,),
