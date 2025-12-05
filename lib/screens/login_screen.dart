@@ -30,8 +30,8 @@ class _LoginScreenState extends State<LoginScreen> {
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
-              Color(0xFFE1FBFF),
-              Color(0xFFCFFFE1),
+              Color.fromARGB(255, 145, 240, 211),
+              Color.fromARGB(255, 108, 238, 158),
             ],
           ),
         ),
@@ -60,7 +60,7 @@ class _LoginScreenState extends State<LoginScreen> {
       style: TextStyle(
         fontSize: 16,
         fontWeight: FontWeight.w500,
-        color: Colors.black54,
+        color: Colors.black,
       ),
     ),
     const SizedBox(width: 25),
@@ -88,127 +88,130 @@ class _LoginScreenState extends State<LoginScreen> {
 ),
 const SizedBox(height: 30),
 
-Form(
-  key: _formKey,
-  child: Column(
-    children: [
-      //Email
+Padding(
+  padding: const EdgeInsets.all(16.0),
+  child: Form(
+    key: _formKey,
+    child: Column(
+      children: [
+        //Email
+        TextFormField(
+              controller: _emailController,
+              decoration: const InputDecoration(
+              labelText: "Email",
+              hintText: "Enter your email",
+              prefixIcon: Icon(Icons.email),
+              filled: true,
+              fillColor: Colors.white,
+              border: OutlineInputBorder(
+              borderRadius: BorderRadius.all(Radius.circular(14)),
+     ),
+   ),
+  ),
+  SizedBox(height: 16,),
+      // Password
       TextFormField(
-            controller: _emailController,
-            decoration: const InputDecoration(
-            labelText: "Email",
-            hintText: "Enter your email",
-            prefixIcon: Icon(Icons.email),
-            filled: true,
-            fillColor: Colors.white,
-            border: OutlineInputBorder(
+        controller: _passwordController,
+        obscureText: _obscurePassword,
+        decoration: InputDecoration(
+          labelText: "Password",
+          hintText: "Enter your password",
+          prefixIcon: const Icon(Icons.lock),
+          filled: true,
+          fillColor: Colors.white,
+          border: const OutlineInputBorder(
             borderRadius: BorderRadius.all(Radius.circular(14)),
-   ),
- ),
-),
-SizedBox(height: 16,),
-    // Password
-    TextFormField(
-      controller: _passwordController,
-      obscureText: _obscurePassword,
-      decoration: InputDecoration(
-        labelText: "Password",
-        hintText: "Enter your password",
-        prefixIcon: const Icon(Icons.lock),
-        filled: true,
-        fillColor: Colors.white,
-        border: const OutlineInputBorder(
-          borderRadius: BorderRadius.all(Radius.circular(14)),
-        ),
-        suffixIcon: IconButton(
-          icon: Icon(
-            _obscurePassword
-                ? Icons.visibility
-                : Icons.visibility_off,
           ),
+          suffixIcon: IconButton(
+            icon: Icon(
+              _obscurePassword
+                  ? Icons.visibility
+                  : Icons.visibility_off,
+            ),
+            onPressed: () {
+              setState(() {
+                _obscurePassword = !_obscurePassword;
+              });
+            },
+          ),
+        ),
+      ),
+      SizedBox(height: 2,),
+  
+      // Forgot password
+      Align(
+        alignment: Alignment.centerRight,
+        child: TextButton(
           onPressed: () {
-            setState(() {
-              _obscurePassword = !_obscurePassword;
-            });
+            //
           },
-        ),
-      ),
-    ),
-    SizedBox(height: 2,),
-
-    // Forgot password
-    Align(
-      alignment: Alignment.centerRight,
-      child: TextButton(
-        onPressed: () {
-          //
-        },
-        child: const Text(
-          "Forgot Password?",
-          style: TextStyle(
-            fontSize: 13,
-            color: Colors.blue,
+          child: const Text(
+            "Forgot Password?",
+            style: TextStyle(
+              fontSize: 13,
+              color: Colors.blue,
+            ),
           ),
         ),
       ),
-    ),
-
-    SizedBox(height: 15,),
-    
-    ElevatedButton(
-   onPressed: () {
-     Navigator.pushReplacement(
-       context,
-       MaterialPageRoute(builder: (_) => const HomeScreen()),
-     );
-   },
-   style: ElevatedButton.styleFrom(
-     padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 70),
-     backgroundColor: Colors.blueAccent, 
-     shape: RoundedRectangleBorder(
-       borderRadius: BorderRadius.circular(14),
-     ),
-   ),
-   child: const Text(
-     "Sign In",
-     style: TextStyle(
-       fontSize: 24,
-       fontWeight: FontWeight.w600,
-       color: Colors.white,
-     ),
-   ),
- ),
- 
- const SizedBox(height: 20),
-
-//dont have  an  account?????
-Row(
-   mainAxisAlignment: MainAxisAlignment.center,
-   children: [
-     const Text(
-       "Don't have an account? ",
-       style: TextStyle(fontSize: 14),
-     ),
-     GestureDetector(
-       onTap: () {
-       Navigator.push(context,
-          MaterialPageRoute(builder: (_) => const RegisterScreen()));
-       },
-       child: const Text(
-         "Sign up here",
-         style: TextStyle(
-           color: Colors.blue,
-           fontSize: 14,
-           fontWeight: FontWeight.w600,
-         ),
+  
+      SizedBox(height: 15,),
+      
+      ElevatedButton(
+     onPressed: () {
+       Navigator.pushReplacement(
+         context,
+         MaterialPageRoute(builder: (_) => const HomeScreen()),
+       );
+     },
+     style: ElevatedButton.styleFrom(
+       padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 70),
+       backgroundColor: Colors.blueAccent, 
+       shape: RoundedRectangleBorder(
+         borderRadius: BorderRadius.circular(14),
        ),
      ),
-   ],
-),
-
-    ],
-   )
-  )
+     child: const Text(
+       "Sign In",
+       style: TextStyle(
+         fontSize: 24,
+         fontWeight: FontWeight.w600,
+         color: Colors.white,
+       ),
+     ),
+   ),
+   
+   const SizedBox(height: 20),
+  
+  //dont have  an  account?????
+  Row(
+     mainAxisAlignment: MainAxisAlignment.center,
+     children: [
+       const Text(
+         "Don't have an account? ",
+         style: TextStyle(fontSize: 14),
+       ),
+       GestureDetector(
+         onTap: () {
+         Navigator.push(context,
+            MaterialPageRoute(builder: (_) => const RegisterScreen()));
+         },
+         child: const Text(
+           "Sign up here",
+           style: TextStyle(
+             color: Colors.blue,
+             fontSize: 14,
+             fontWeight: FontWeight.w600,
+           ),
+         ),
+       ),
+     ],
+  ),
+  
+      ],
+     )
+    ),
+)
           ],
         )
       ),

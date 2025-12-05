@@ -1,8 +1,6 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:matchpoint/screens/login_screen.dart';
 import 'package:matchpoint/screens/onboarding_screen.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -39,8 +37,8 @@ class _SplashScreenState extends State<SplashScreen> {
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
               colors: [
-                Color(0xFFE1FBFF), // light aqua
-                Color(0xFFCFFFE1), // light green
+                  Color.fromARGB(255, 145, 240, 211),
+                   Color.fromARGB(255, 108, 238, 158),
       ],
     ),
   ),
