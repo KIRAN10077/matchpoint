@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:matchpoint/screens/home_screen.dart';
+import 'package:matchpoint/screens/register_screen.dart';
 
 
 class LoginScreen extends StatefulWidget {
@@ -152,7 +153,7 @@ SizedBox(height: 16,),
       ),
     ),
 
-    SizedBox(height: 30,),
+    SizedBox(height: 15,),
     
     ElevatedButton(
    onPressed: () {
@@ -162,8 +163,8 @@ SizedBox(height: 16,),
      );
    },
    style: ElevatedButton.styleFrom(
-     padding: const EdgeInsets.symmetric(vertical: 14),
-     backgroundColor: Colors.blueAccent, // TEMP — matches your gradient theme later
+     padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 70),
+     backgroundColor: Colors.blueAccent, 
      shape: RoundedRectangleBorder(
        borderRadius: BorderRadius.circular(14),
      ),
@@ -171,7 +172,7 @@ SizedBox(height: 16,),
    child: const Text(
      "Sign In",
      style: TextStyle(
-       fontSize: 18,
+       fontSize: 24,
        fontWeight: FontWeight.w600,
        color: Colors.white,
      ),
@@ -180,9 +181,33 @@ SizedBox(height: 16,),
  
  const SizedBox(height: 20),
 
+//dont have  an  account?????
+Row(
+   mainAxisAlignment: MainAxisAlignment.center,
+   children: [
+     const Text(
+       "Don't have an account? ",
+       style: TextStyle(fontSize: 14),
+     ),
+     GestureDetector(
+       onTap: () {
+       Navigator.push(context,
+          MaterialPageRoute(builder: (_) => const RegisterScreen()));
+       },
+       child: const Text(
+         "Sign up here",
+         style: TextStyle(
+           color: Colors.blue,
+           fontSize: 14,
+           fontWeight: FontWeight.w600,
+         ),
+       ),
+     ),
+   ],
+),
 
     ],
-    )
+   )
   )
           ],
         )
