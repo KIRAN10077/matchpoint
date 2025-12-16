@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:matchpoint/screens/home_screen.dart';
+import 'package:matchpoint/screens/dashboard_screen.dart';
 import 'package:matchpoint/screens/login_screen.dart';
 
 
@@ -38,10 +38,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
         ),
         child: Column(
           children: [
-            const SizedBox(height: 120),
+            const SizedBox(height: 50),
       Image.asset(
         'assets/images/matchpoint_logo_final.png',
-        height: 160,
+        height: 100,
       ),
       const SizedBox(height: 10),
       Text(
@@ -193,7 +193,7 @@ Padding(
      onPressed: () {
        Navigator.pushReplacement(
          context,
-         MaterialPageRoute(builder: (_) => const HomeScreen()),
+         MaterialPageRoute(builder: (_) => const DashboardScreen()),
        );
      },
      style: ElevatedButton.styleFrom(

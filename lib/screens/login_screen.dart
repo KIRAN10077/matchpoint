@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:matchpoint/screens/home_screen.dart';
+import 'package:matchpoint/screens/dashboard_screen.dart';
 import 'package:matchpoint/screens/register_screen.dart';
 
 
@@ -30,7 +30,7 @@ class _LoginScreenState extends State<LoginScreen> {
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
-              Color.fromARGB(255, 145, 240, 211),
+                Color.fromARGB(255, 145, 240, 211),
               Color.fromARGB(255, 108, 238, 158),
             ],
           ),
@@ -60,7 +60,7 @@ class _LoginScreenState extends State<LoginScreen> {
       style: TextStyle(
         fontSize: 16,
         fontWeight: FontWeight.w500,
-        color: Colors.black,
+        color: Colors.black54,
       ),
     ),
     const SizedBox(width: 25),
@@ -161,7 +161,7 @@ Padding(
      onPressed: () {
        Navigator.pushReplacement(
          context,
-         MaterialPageRoute(builder: (_) => const HomeScreen()),
+         MaterialPageRoute(builder: (_) => const DashboardScreen()),
        );
      },
      style: ElevatedButton.styleFrom(
