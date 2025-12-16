@@ -36,12 +36,12 @@ child: Column(
   children: [
     SizedBox(height: 80,),
     //logo
-    Image.asset('assets/images/matchpoint_logo_final.png', height: 200,),
+    Image.asset('assets/images/matchpoint_logo_final.png', height: 100,),
     //title
     Text(
       "MatchPoint",
       style: GoogleFonts.audiowide(
-        fontSize: 28,
+        fontSize: 24,
         color: Colors.black,
       ),
     ),
@@ -57,7 +57,7 @@ child: Column(
                 children:  [
                   Column(
                     children: [
-                      SizedBox(height: MediaQuery.of(context).size.height*0.38,
+                      SizedBox(height: MediaQuery.of(context).size.height*0.3,
                       child:Image.asset('assets/images/image1_onboarding.jpg', fit: BoxFit.contain),
                       ),
 
@@ -81,7 +81,7 @@ child: Column(
                   //page2
                   Column(
                     children: [
-                      SizedBox(height: MediaQuery.of(context).size.height*0.38,
+                      SizedBox(height: MediaQuery.of(context).size.height*0.3,
                       child:Image.asset('assets/images/image2_onboarding.png', fit: BoxFit.contain),
                       ),
 
@@ -104,7 +104,7 @@ child: Column(
                   //page3
                   Column(
                     children: [
-                      SizedBox(height: MediaQuery.of(context).size.height*0.38,
+                      SizedBox(height: MediaQuery.of(context).size.height*0.3,
                       child:Image.asset('assets/images/image3_onboarding.jpg', fit: BoxFit.contain),
                       ),
 
