@@ -11,7 +11,7 @@ ThemeData getApplicationTheme(){
           fontSize: 18,
           color: Colors.white,
           fontWeight: FontWeight.w500,
-          backgroundColor: Colors.orange),
+          ),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadiusGeometry.circular(5),
           ),

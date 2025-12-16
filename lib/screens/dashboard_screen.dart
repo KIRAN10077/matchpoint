@@ -17,9 +17,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   List<Widget> firstBottomScreen = [
     const HomeScreen(),
+    const BrowseCourtsScreen(),
     const BookingScreen(),
-    const ProfileScreen(), 
-    const BrowseCourtsScreen()
+    const ProfileScreen() 
   ];
 
   @override
@@ -32,7 +32,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
       ),
       body: firstBottomScreen[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _selectedIndex,
         type: BottomNavigationBarType.fixed,
+        onTap: (index) {
+           setState(() {
+          _selectedIndex = index;
+        });
+      },
         items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
