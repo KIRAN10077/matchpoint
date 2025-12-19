@@ -41,8 +41,19 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: SingleChildScrollView(
+    return Container(
+  decoration: const BoxDecoration(
+    gradient: LinearGradient(
+      begin: Alignment.topCenter,
+      end: Alignment.bottomCenter,
+      colors: [
+        Color.fromARGB(255, 172, 225, 238),
+        Color.fromARGB(255, 49, 138, 216),
+      ],
+    ),
+  ),
+  child: SafeArea(
+    child: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: Column(
@@ -158,13 +169,102 @@ LayoutBuilder(
   },
 ),
 
-const SizedBox(height: 20),
+ SizedBox(height: 20),
+ GridView.builder(
+  shrinkWrap: true,
+  physics: const NeverScrollableScrollPhysics(),
+  itemCount: 6,
+  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+    crossAxisCount: MediaQuery.of(context).size.width >= 600 ? 2 : 1,
+    mainAxisSpacing: 14,
+    crossAxisSpacing: 14,
+    childAspectRatio: 1.6,
+  ),
+  itemBuilder: (context, index) {
+    final venues = [
+      {'title': 'Hoops', 'location': 'Thamel, Kathmandu','image': 'assets/images/hoops.png'},
+      {'title': 'Surya Futsal', 'location': 'Kalimati, Kathmandu','image': 'assets/images/surya_futsal.png' },
+      {'title': 'ABC Court', 'location': 'Baneshwor','image': 'assets/images/abc_court.jpg'},
+      {'title': 'XYZ Arena', 'location': 'Lalitpur','image': 'assets/images/xyz_arena.jpg'},
+      {'title': 'Prime Court', 'location': 'Bhaktapur','image': 'assets/images/prime_court.jpg'},
+      {'title': 'City Turf', 'location': 'Koteshwor','image': 'assets/images/city_turf.jpg'},
+    ];
 
+    return SimpleVenueCard(
+  title: venues[index]['title']!,
+  location: venues[index]['location']!,
+  imagePath: venues[index]['image']!,
+);
+
+  },
+),
+const SizedBox(height: 24),
+
+ 
 
       ],
     ),
   ),
 ),
+  ),
 );
 }
 }
+class SimpleVenueCard extends StatelessWidget {
+  final String title;
+  final String location;
+  final String imagePath;
+
+  const SimpleVenueCard({
+    super.key,
+    required this.title,
+    required this.location,
+    required this.imagePath,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      elevation: 2,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(14),
+      ),
+      clipBehavior: Clip.antiAlias,
+      child: Column(
+        children: [
+          Expanded(
+            child: Image.asset(
+              imagePath,
+              width: double.infinity,
+              fit: BoxFit.cover,
+              errorBuilder: (context, error, stackTrace) {
+                return Container(
+                  color: Colors.black12,
+                  child: const Center(child: Icon(Icons.broken_image, size: 40)),
+                );
+              },
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(10),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  location,
+                  style: const TextStyle(fontSize: 11, color: Colors.black54),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
