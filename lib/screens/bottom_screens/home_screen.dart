@@ -8,11 +8,11 @@ class HomeScreen extends StatelessWidget {
   required IconData icon,
 }) {
   return Container(
-    width: 120, // 👈 bigger card
+    width: 120, 
     margin: const EdgeInsets.only(right: 14),
     decoration: BoxDecoration(
       color: Colors.white,
-      borderRadius: BorderRadius.circular(16), // smoother corners
+      borderRadius: BorderRadius.circular(16),
       border: Border.all(color: Colors.black12),
     ),
     child: Column(
@@ -20,14 +20,14 @@ class HomeScreen extends StatelessWidget {
       children: [
         Icon(
           icon,
-          size: 38, // 👈 bigger icon
+          size: 38, 
           color: Colors.black87,
         ),
         const SizedBox(height: 10),
         Text(
           title,
           style: const TextStyle(
-            fontSize: 14, // 👈 bigger text
+            fontSize: 14, 
             fontWeight: FontWeight.w600,
           ),
           textAlign: TextAlign.center,
