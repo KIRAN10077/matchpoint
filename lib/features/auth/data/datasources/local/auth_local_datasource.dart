@@ -26,7 +26,7 @@ class AuthLocalDatasource implements IAuthDatasource{
       final exists = await _hiveService.isEmailExists(email);
       return Future.value(exists);
     }catch(e){
-      return Future.value(null);
+      return Future.value(false);
     }
   }
 

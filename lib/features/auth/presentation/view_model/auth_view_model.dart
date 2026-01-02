@@ -1,4 +1,3 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:matchpoint/features/auth/domain/usecases/login_usecase.dart';
 import 'package:matchpoint/features/auth/domain/usecases/register_usecase.dart';
