@@ -14,7 +14,6 @@ class RegisterScreen extends ConsumerStatefulWidget {
 }
 
 class _RegisterScreenState extends ConsumerState<RegisterScreen> {
-  // form key and controllers
   final _formKey = GlobalKey<FormState>();
   final _fullNameController = TextEditingController();
   final _emailController = TextEditingController();
@@ -35,14 +34,13 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
 
   void _handleSignup() async {
     if (_formKey.currentState!.validate()) {
-      // Generate username from email (before @)
       final username = _emailController.text.trim().split('@').first;
 
       await ref.read(authViewModelProvider.notifier).register(
             fullName: _fullNameController.text.trim(),
             email: _emailController.text.trim(),
             username: username,
-            password: _passwordController.text,
+            password: _passwordController.text.trim(),
           );
     }
   }
@@ -51,7 +49,6 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   Widget build(BuildContext context) {
     final authState = ref.watch(authViewModelProvider);
 
-    // Listen to auth state changes
     ref.listen<AuthState>(authViewModelProvider, (previous, next) {
       if (next.status == AuthStatus.registered) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -60,7 +57,6 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
             backgroundColor: Colors.green,
           ),
         );
-        // Navigate to login screen after successful registration
         Future.delayed(const Duration(seconds: 1), () {
           if (mounted) {
             AppRoutes.pushReplacement(context, const LoginScreen());
@@ -103,7 +99,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                 "MatchPoint",
                 style: GoogleFonts.audiowide(
                   fontSize: 32,
-                  color: const Color.fromARGB(255, 0, 0, 0),
+                  color: Colors.black,
                 ),
               ),
               const SizedBox(height: 30),
@@ -138,8 +134,6 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                         Text(
                           "Log In",
                           style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
                             color: Colors.black54,
                           ),
                         ),
@@ -155,11 +149,12 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                   key: _formKey,
                   child: Column(
                     children: [
+                      // FULL NAME
                       TextFormField(
                         controller: _fullNameController,
                         decoration: const InputDecoration(
-                          labelText: "Name",
-                          hintText: "Enter your name",
+                          labelText: "Full Name",
+                          hintText: "Enter your full name",
                           prefixIcon: Icon(Icons.person),
                           filled: true,
                           fillColor: Colors.white,
@@ -178,6 +173,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                         },
                       ),
                       const SizedBox(height: 16),
+                      // EMAIL
                       TextFormField(
                         controller: _emailController,
                         keyboardType: TextInputType.emailAddress,
@@ -195,22 +191,22 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                           if (value == null || value.trim().isEmpty) {
                             return 'Please enter your email';
                           }
-                          // Proper email regex validation
                           final emailRegex = RegExp(
                             r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',
                           );
                           if (!emailRegex.hasMatch(value.trim())) {
-                            return 'Please enter a valid email address';
+                            return 'Please enter a valid email';
                           }
                           return null;
                         },
                       ),
                       const SizedBox(height: 16),
+                      // PASSWORD
                       TextFormField(
                         controller: _passwordController,
                         obscureText: _obscurePassword,
                         decoration: InputDecoration(
-                          labelText: "Create a Password",
+                          labelText: "Password",
                           hintText: "Enter your password",
                           prefixIcon: const Icon(Icons.lock),
                           filled: true,
@@ -242,6 +238,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                         },
                       ),
                       const SizedBox(height: 16),
+                      // CONFIRM PASSWORD
                       TextFormField(
                         controller: _confirmPasswordController,
                         obscureText: _obscureConfirmPassword,
@@ -262,7 +259,8 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                             ),
                             onPressed: () {
                               setState(() {
-                                _obscureConfirmPassword = !_obscureConfirmPassword;
+                                _obscureConfirmPassword =
+                                    !_obscureConfirmPassword;
                               });
                             },
                           ),
@@ -278,6 +276,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                         },
                       ),
                       const SizedBox(height: 40),
+                      // SIGN UP BUTTON
                       ElevatedButton(
                         onPressed: authState.status == AuthStatus.loading
                             ? null
@@ -286,6 +285,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                           padding: const EdgeInsets.symmetric(
                               vertical: 20, horizontal: 70),
                           backgroundColor: Colors.blueAccent,
+                          disabledBackgroundColor: Colors.grey,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(14),
                           ),
@@ -302,7 +302,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                             : const Text(
                                 "Sign Up",
                                 style: TextStyle(
-                                  fontSize: 24,
+                                  fontSize: 20,
                                   fontWeight: FontWeight.w600,
                                   color: Colors.white,
                                 ),
@@ -312,19 +312,16 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          const Text(
-                            "Already own an account? ",
-                            style: TextStyle(fontSize: 14),
-                          ),
+                          const Text("Already have an account? "),
                           GestureDetector(
                             onTap: () {
-                              AppRoutes.push(context, const LoginScreen());
+                              AppRoutes.pushReplacement(
+                                  context, const LoginScreen());
                             },
                             child: const Text(
-                              "Log in here",
+                              "Log In",
                               style: TextStyle(
-                                color: Colors.blue,
-                                fontSize: 14,
+                                color: Colors.blueAccent,
                                 fontWeight: FontWeight.w600,
                               ),
                             ),

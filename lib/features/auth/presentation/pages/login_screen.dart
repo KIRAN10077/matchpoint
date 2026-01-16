@@ -15,7 +15,6 @@ class LoginScreen extends ConsumerStatefulWidget {
 }
 
 class _LoginScreenState extends ConsumerState<LoginScreen> {
-  // form key and controllers
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
@@ -32,8 +31,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   void _handleLogin() async {
     if (_formKey.currentState!.validate()) {
       await ref.read(authViewModelProvider.notifier).login(
-            _emailController.text.trim(),
-            _passwordController.text,
+            email: _emailController.text.trim(),
+            password: _passwordController.text.trim(),
           );
     }
   }
@@ -42,7 +41,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   Widget build(BuildContext context) {
     final authState = ref.watch(authViewModelProvider);
 
-    // Listen to auth state changes
     ref.listen<AuthState>(authViewModelProvider, (previous, next) {
       if (next.status == AuthStatus.authenticated) {
         AppRoutes.pushAndRemoveUntil(context, const DashboardScreen());
@@ -87,12 +85,14 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 ),
               ),
               const SizedBox(height: 30),
+              // TAB SWITCH
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   GestureDetector(
                     onTap: () {
-                      AppRoutes.pushReplacement(context, const RegisterScreen());
+                      AppRoutes.pushReplacement(
+                          context, const RegisterScreen());
                     },
                     child: const Text(
                       "Sign Up",
@@ -131,6 +131,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   key: _formKey,
                   child: Column(
                     children: [
+                      // EMAIL FIELD
                       TextFormField(
                         controller: _emailController,
                         keyboardType: TextInputType.emailAddress,
@@ -141,24 +142,25 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           filled: true,
                           fillColor: Colors.white,
                           border: OutlineInputBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(14)),
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(14)),
                           ),
                         ),
                         validator: (value) {
                           if (value == null || value.trim().isEmpty) {
                             return 'Please enter your email';
                           }
-                          // Proper email regex validation
                           final emailRegex = RegExp(
                             r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',
                           );
                           if (!emailRegex.hasMatch(value.trim())) {
-                            return 'Please enter a valid email address';
+                            return 'Please enter a valid email';
                           }
                           return null;
                         },
                       ),
                       const SizedBox(height: 16),
+                      // PASSWORD FIELD
                       TextFormField(
                         controller: _passwordController,
                         obscureText: _obscurePassword,
@@ -169,7 +171,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           filled: true,
                           fillColor: Colors.white,
                           border: const OutlineInputBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(14)),
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(14)),
                           ),
                           suffixIcon: IconButton(
                             icon: Icon(
@@ -198,19 +201,15 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       Align(
                         alignment: Alignment.centerRight,
                         child: TextButton(
-                          onPressed: () {
-                            // TODO: Implement forgot password
-                          },
+                          onPressed: () {},
                           child: const Text(
                             "Forgot Password?",
-                            style: TextStyle(
-                              fontSize: 13,
-                              color: Colors.blue,
-                            ),
+                            style: TextStyle(color: Colors.black54),
                           ),
                         ),
                       ),
                       const SizedBox(height: 15),
+                      // LOGIN BUTTON
                       ElevatedButton(
                         onPressed: authState.status == AuthStatus.loading
                             ? null
@@ -219,6 +218,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           padding: const EdgeInsets.symmetric(
                               vertical: 20, horizontal: 70),
                           backgroundColor: Colors.blueAccent,
+                          disabledBackgroundColor: Colors.grey,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(14),
                           ),
@@ -233,9 +233,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                 ),
                               )
                             : const Text(
-                                "Sign In",
+                                "Login",
                                 style: TextStyle(
-                                  fontSize: 24,
+                                  fontSize: 20,
                                   fontWeight: FontWeight.w600,
                                   color: Colors.white,
                                 ),
@@ -245,19 +245,16 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          const Text(
-                            "Don't have an account? ",
-                            style: TextStyle(fontSize: 14),
-                          ),
+                          const Text("Don't have an account? "),
                           GestureDetector(
                             onTap: () {
-                              AppRoutes.push(context, const RegisterScreen());
+                              AppRoutes.pushReplacement(
+                                  context, const RegisterScreen());
                             },
                             child: const Text(
-                              "Sign up here",
+                              "Sign Up",
                               style: TextStyle(
-                                color: Colors.blue,
-                                fontSize: 14,
+                                color: Colors.blueAccent,
                                 fontWeight: FontWeight.w600,
                               ),
                             ),
