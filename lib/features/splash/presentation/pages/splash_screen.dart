@@ -14,16 +14,21 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
+    _initializeApp();
+  }
 
-    // Wait 5 seconds then navigate
-    Timer(const Duration(seconds: 3), () {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (_) => const OnboardingScreen(),  // change to your target screen
-        ),
-      );
-    });
+  Future<void> _initializeApp() async {
+    // Wait 3 seconds for splash to be visible
+    await Future.delayed(const Duration(seconds: 3));
+
+    if (!mounted) return;
+
+    // Always navigate to Onboarding for now
+    // The login logic will handle session persistence
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (_) => const OnboardingScreen()),
+    );
   }
 
 

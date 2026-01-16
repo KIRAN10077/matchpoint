@@ -5,52 +5,52 @@ import 'package:uuid/uuid.dart';
 
 part 'auth_hive_model.g.dart';
 
-@HiveType(typeId:HiveTableConstant.authTypeId)
-class AuthHiveModel extends HiveObject{
-
+@HiveType(typeId: HiveTableConstants.authTypeId)
+class AuthHiveModel extends HiveObject {
   @HiveField(0)
   final String? authId;
+
   @HiveField(1)
   final String fullName;
+
   @HiveField(2)
-  final String email;
-  @HiveField(3)
   final String username;
+
+  @HiveField(3)
+  final String email;
+
   @HiveField(4)
   final String? password;
-  @HiveField(5)
-  final String? profilePicture;
+
+
 
   AuthHiveModel({
     String? authId,
     required this.fullName,
-    required this.email,
     required this.username,
+    required this.email,
     this.password,
-    this.profilePicture,
-  }) : authId = authId ?? Uuid().v4();
+  }) : authId = authId ?? const Uuid().v4();
 
-  //From Entity
-   factory AuthHiveModel.fromEntiity(AuthEntity entity){
+  // ✅ change: take AuthEntity, not AuthHiveModel
+  factory AuthHiveModel.fromEntity(AuthEntity entity) {
     return AuthHiveModel(
-      authId: entity.authId,
+      authId: entity.authId, // ✅ map userId -> authId
       fullName: entity.fullName,
-      email: entity.email,
       username: entity.username,
+      email: entity.email,
       password: entity.password,
-      profilePicture: entity.profilePicture,
     );
-   }
+  }
 
-  //To Entity
-  AuthEntity toEntity(){
+  // ✅ change: AuthEntity expects userId (not authId)
+  AuthEntity toEntity() {
     return AuthEntity(
-      authId: authId,
+      authId: authId, // ✅ map authId -> userId
       fullName: fullName,
-      email: email,
       username: username,
+      email: email,
       password: password,
-      profilePicture: profilePicture,
     );
   }
 }
