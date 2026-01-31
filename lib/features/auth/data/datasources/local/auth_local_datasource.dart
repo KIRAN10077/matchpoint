@@ -4,7 +4,6 @@ import 'package:matchpoint/core/services/storage/user_session_service.dart';
 import 'package:matchpoint/features/auth/data/datasources/auth_datasource.dart';
 import 'package:matchpoint/features/auth/data/models/auth_hive_model.dart';
 
-
 // Create provider
 final authLocalDatasourceProvider = Provider<AuthLocalDatasource>((ref) {
   final hiveService = ref.read(hiveServiceProvider);

@@ -1,6 +1,6 @@
+import 'package:matchpoint/features/auth/domain/entities/auth_entity.dart';
 import 'package:hive/hive.dart';
 import 'package:matchpoint/core/constants/hive_table_constants.dart';
-import 'package:matchpoint/features/auth/domain/entities/auth_entity.dart';
 import 'package:uuid/uuid.dart';
 
 part 'auth_hive_model.g.dart';

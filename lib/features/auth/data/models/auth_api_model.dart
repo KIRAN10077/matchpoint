@@ -1,4 +1,3 @@
-
 import 'package:matchpoint/features/auth/domain/entities/auth_entity.dart';
 
 class AuthApiModel {

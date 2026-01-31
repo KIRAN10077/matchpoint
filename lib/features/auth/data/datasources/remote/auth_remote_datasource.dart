@@ -1,11 +1,11 @@
 
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:matchpoint/core/api/api_client.dart';
 import 'package:matchpoint/core/api/api_endpoints.dart';
 import 'package:matchpoint/core/services/storage/user_session_service.dart';
 import 'package:matchpoint/features/auth/data/datasources/auth_datasource.dart';
 import 'package:matchpoint/features/auth/data/models/auth_api_model.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
 
 final authRemoteDatasourceProvider = Provider<IAuthRemoteDataSource>((ref) {
   return AuthRemoteDatasource(
