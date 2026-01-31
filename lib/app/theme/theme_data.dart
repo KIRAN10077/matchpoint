@@ -4,7 +4,7 @@ ThemeData getApplicationTheme(){
   return ThemeData(
     primarySwatch: Colors.orange,
     scaffoldBackgroundColor: Colors.grey[200],
-    fontFamily: 'OpenSans Regular',
+    fontFamily: 'OpenSans Bold',
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
         textStyle: const TextStyle(
