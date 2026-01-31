@@ -1,39 +1,35 @@
-import 'package:dartz/dartz.dart';
-import 'package:equatable/equatable.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:matchpoint/core/error/failures.dart';
 import 'package:matchpoint/core/usecases/app_usecase.dart';
 import 'package:matchpoint/features/auth/data/repositories/auth_repository.dart';
 import 'package:matchpoint/features/auth/domain/entities/auth_entity.dart';
 import 'package:matchpoint/features/auth/domain/repositories/auth_repository.dart';
+import 'package:dartz/dartz.dart';
+import 'package:equatable/equatable.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class LoginUsecaseParams extends Equatable {
   final String email;
   final String password;
 
-  const LoginUsecaseParams({
-    required this.email,
-    required this.password,
-  });
-
+  const LoginUsecaseParams({required this.email,required this.password,});
   @override
-  List<Object?> get props => [email, password];
+  List<Object?> get props => throw UnimplementedError();
 }
 
-// Provider for LoginUsecase
-final loginUsecaseProvider = Provider<LoginUsecase>((ref) {
+final loginUsecaseProvider = Provider<LoginUsecase>((ref){
   final authRepository = ref.read(authRepositoryProvider);
   return LoginUsecase(authRepository: authRepository);
 });
 
-class LoginUsecase implements UsecaseWithParams<AuthEntity, LoginUsecaseParams> {
+class LoginUsecase 
+  implements UsecaseWithParams<AuthEntity, LoginUsecaseParams>{
   final IAuthRepository _authRepository;
 
   LoginUsecase({required IAuthRepository authRepository})
-      : _authRepository = authRepository;
-
+    : _authRepository = authRepository;
   @override
   Future<Either<Failure, AuthEntity>> call(LoginUsecaseParams params) {
     return _authRepository.login(params.email, params.password);
   }
+
 }

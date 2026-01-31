@@ -1,6 +1,7 @@
-import 'package:dartz/dartz.dart';
+
 import 'package:matchpoint/core/error/failures.dart';
 import 'package:matchpoint/features/auth/domain/entities/auth_entity.dart';
+import 'package:dartz/dartz.dart';
 
 
 abstract interface class IAuthRepository {
