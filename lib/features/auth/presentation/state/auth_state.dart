@@ -1,20 +1,10 @@
+import 'package:matchpoint/features/auth/domain/entities/auth_entity.dart';
 import 'package:equatable/equatable.dart';
 
-enum AuthStatus { initial, loading, authenticated, unauthenticated, error, registered }
+enum AuthStatus { initial, loading, authenticated,registered, unauthenticated, error }
 
-class AuthEntity {
-  final String authId;
-  final String email;
-  final String fullName;
 
-  AuthEntity({
-    required this.authId,
-    required this.email,
-    required this.fullName,
-  });
-}
-
-class AuthState extends Equatable {
+class AuthState extends Equatable{
   final AuthStatus status;
   final AuthEntity? authEntity;
   final String? errorMessage;
