@@ -1,7 +1,3 @@
-import 'package:dartz/dartz.dart';
-import 'package:dio/dio.dart';
-
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:matchpoint/core/error/failures.dart';
 import 'package:matchpoint/core/services/connectivity/network_info.dart';
 import 'package:matchpoint/features/auth/data/datasources/auth_datasource.dart';
@@ -11,6 +7,10 @@ import 'package:matchpoint/features/auth/data/models/auth_api_model.dart';
 import 'package:matchpoint/features/auth/data/models/auth_hive_model.dart';
 import 'package:matchpoint/features/auth/domain/entities/auth_entity.dart';
 import 'package:matchpoint/features/auth/domain/repositories/auth_repository.dart';
+import 'package:dartz/dartz.dart';
+import 'package:dio/dio.dart';
+
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 //provider
 final authRepositoryProvider = Provider<IAuthRepository>((ref) {

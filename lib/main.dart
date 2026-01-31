@@ -1,9 +1,8 @@
-
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:matchpoint/app/app.dart';
 import 'package:matchpoint/core/services/hive/hive_service.dart';
 import 'package:matchpoint/core/services/storage/user_session_service.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 Future<void> main() async {
