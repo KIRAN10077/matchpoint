@@ -45,6 +45,8 @@ dependencies:
   shared_preferences: ^2.5.4
   connectivity_plus: ^7.0.0
   jwt_decoder: ^2.0.1
+  permission_handler: ^11.3.1
+  image_picker: ^1.1.2
   
 
 
@@ -53,10 +55,14 @@ dependencies:
   cupertino_icons: ^1.0.8
   flutter_riverpod: ^3.1.0
   dio_smart_retry: ^7.0.1
+  test_cov_console: ^0.2.2
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  flutter_native_splash: ^2.4.1
+  mocktail: ^1.0.4
+
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
