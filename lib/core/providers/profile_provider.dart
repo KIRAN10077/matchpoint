@@ -112,6 +112,67 @@ class ProfileController extends StateNotifier<ProfileState> {
     }
   }
 
+  Future<bool> updateProfileInfo({
+    required String name,
+    required String email,
+  }) async {
+    state = state.copyWith(loading: true, error: null);
+
+    try {
+      final remote = ProfileRemoteDataSource(_dio, _session);
+      final updated = await remote.updateProfile(name: name, email: email);
+
+      final userId = updated['userId'] ?? _session.getCurrentUserId() ?? '';
+      if (userId.isEmpty) {
+        throw Exception('User id is missing');
+      }
+
+      await _session.saveUserSession(
+        userId: userId,
+        email: updated['email'] ?? email,
+        fullName: updated['name'] ?? name,
+      );
+
+      state = state.copyWith(
+        loading: false,
+        imageUrl: (updated['imageUrl']?.isNotEmpty ?? false)
+            ? updated['imageUrl']
+            : state.imageUrl,
+      );
+      return true;
+    } catch (e) {
+      state = state.copyWith(
+        loading: false,
+        error: e.toString(),
+      );
+      return false;
+    }
+  }
+
+  Future<bool> changePassword({
+    required String currentPassword,
+    required String newPassword,
+  }) async {
+    state = state.copyWith(loading: true, error: null);
+
+    try {
+      final remote = ProfileRemoteDataSource(_dio, _session);
+      await remote.changePassword(
+        currentPassword: currentPassword,
+        newPassword: newPassword,
+      );
+
+      state = state.copyWith(loading: false);
+      return true;
+    } catch (e) {
+      state = state.copyWith(
+        loading: false,
+        error: e.toString(),
+      );
+      return false;
+    }
+  }
+
   // ✅ NEW: clear local state on logout
   void clear() {
     state = const ProfileState();
