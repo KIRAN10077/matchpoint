@@ -54,7 +54,15 @@ void main() {
     await tester.pumpWidget(wrapWithApp(fakeSession: fakeSession));
     await tester.pump();
 
-    await tester.tap(find.text('Logout'));
+    await tester.ensureVisible(find.text('Logout'));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Logout').first);
+    await tester.pumpAndSettle();
+
+    expect(find.text('Confirm Logout'), findsOneWidget);
+
+    await tester.tap(find.widgetWithText(ElevatedButton, 'Logout').last);
     await tester.pumpAndSettle();
 
     expect(find.byType(SignupScreen), findsOneWidget);

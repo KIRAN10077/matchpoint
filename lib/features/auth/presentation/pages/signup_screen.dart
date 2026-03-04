@@ -55,21 +55,30 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
 
   // ✅ UI-only: themed decoration (green)
   InputDecoration _decoration(String hint, IconData icon) {
+    final isDarkTheme = Theme.of(context).brightness == Brightness.dark;
+    final accent = isDarkTheme
+        ? const Color.fromARGB(255, 126, 215, 181)
+        : const Color.fromARGB(255, 20, 110, 80);
+    final inputBg = isDarkTheme
+        ? const Color.fromARGB(255, 39, 49, 58)
+        : Colors.white.withOpacity(0.92);
+    final hintColor = isDarkTheme ? Colors.white70 : Colors.black54;
+
     return InputDecoration(
-      prefixIcon: Icon(icon, color: const Color.fromARGB(255, 20, 110, 80)),
+      prefixIcon: Icon(icon, color: accent),
       hintText: hint,
-      hintStyle: const TextStyle(color: Colors.black54, fontSize: 14),
+      hintStyle: TextStyle(color: hintColor, fontSize: 14),
       filled: true,
-      fillColor: Colors.white.withOpacity(0.92),
+      fillColor: inputBg,
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(18),
-        borderSide: BorderSide(color: Colors.white.withOpacity(0.7)),
+        borderSide: BorderSide(color: isDarkTheme ? Colors.white24 : Colors.white.withOpacity(0.7)),
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(18),
-        borderSide: const BorderSide(
-          color: Color.fromARGB(255, 20, 110, 80),
+        borderSide: BorderSide(
+          color: accent,
           width: 2,
         ),
       ),
@@ -92,18 +101,36 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
   Widget build(BuildContext context) {
     final authState = ref.watch(authViewModelProvider);
     final isLoading = authState.status == AuthStatus.loading;
+    final isDarkTheme = Theme.of(context).brightness == Brightness.dark;
+    final gradientTop = isDarkTheme
+        ? const Color.fromARGB(255, 32, 39, 46)
+        : const Color.fromARGB(255, 145, 240, 211);
+    final gradientBottom = isDarkTheme
+        ? const Color.fromARGB(255, 18, 23, 30)
+        : const Color.fromARGB(255, 108, 238, 158);
+    final cardColor = isDarkTheme
+        ? Colors.white.withValues(alpha: 0.10)
+        : Colors.white.withOpacity(0.70);
+    final cardBorder = isDarkTheme ? Colors.white24 : Colors.white.withOpacity(0.6);
+    final titleColor = isDarkTheme ? Colors.white : Colors.black;
+    final subtitleColor = isDarkTheme ? Colors.white70 : Colors.black.withOpacity(0.65);
+    final accent = isDarkTheme
+        ? const Color.fromARGB(255, 126, 215, 181)
+        : const Color.fromARGB(255, 20, 110, 80);
 
     return Scaffold(
-      backgroundColor: const Color.fromARGB(137, 255, 255, 255),
+      backgroundColor: isDarkTheme
+          ? const Color.fromARGB(255, 16, 22, 28)
+          : const Color.fromARGB(137, 255, 255, 255),
       body: Container(
         width: double.infinity,
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
-              Color.fromARGB(255, 145, 240, 211),
-              Color.fromARGB(255, 108, 238, 158),
+              gradientTop,
+              gradientBottom,
             ],
           ),
         ),
@@ -147,14 +174,14 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                                 "MatchPoint",
                                 style: GoogleFonts.audiowide(
                                   fontSize: 24,
-                                  color: Colors.black,
+                                  color: titleColor,
                                 ),
                               ),
                               const SizedBox(height: 3),
                               Text(
                                 "Create your account to get started",
                                 style: TextStyle(
-                                  color: Colors.black.withOpacity(0.65),
+                                  color: subtitleColor,
                                   fontSize: 13,
                                 ),
                               ),
@@ -171,12 +198,12 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                   Container(
                     padding: const EdgeInsets.all(18),
                     decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.70),
+                      color: cardColor,
                       borderRadius: BorderRadius.circular(22),
-                      border: Border.all(color: Colors.white.withOpacity(0.6)),
+                      border: Border.all(color: cardBorder),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withOpacity(0.10),
+                          color: Colors.black.withOpacity(isDarkTheme ? 0.20 : 0.10),
                           blurRadius: 18,
                           offset: const Offset(0, 10),
                         ),
@@ -188,14 +215,14 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                         Row(
                           children: [
                             Icon(Icons.person_add_alt_1,
-                                color: Colors.black.withOpacity(0.75)),
+                                color: isDarkTheme ? Colors.white70 : Colors.black.withOpacity(0.75)),
                             const SizedBox(width: 10),
                             Expanded(
                               child: Text(
                                 "Sign Up",
                                 style: GoogleFonts.audiowide(
                                   fontSize: 20,
-                                  color: Colors.black,
+                                  color: titleColor,
                                 ),
                               ),
                             ),
@@ -207,7 +234,7 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                         Container(
                           height: 1,
                           width: double.infinity,
-                          color: Colors.black.withOpacity(0.08),
+                          color: isDarkTheme ? Colors.white24 : Colors.black.withOpacity(0.08),
                         ),
 
                         const SizedBox(height: 14),
@@ -246,8 +273,7 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                           height: 54,
                           child: ElevatedButton(
                             style: ElevatedButton.styleFrom(
-                              backgroundColor:
-                                  const Color.fromARGB(255, 20, 110, 80),
+                              backgroundColor: accent,
                               foregroundColor: Colors.white,
                               elevation: 3,
                               shape: RoundedRectangleBorder(
@@ -298,14 +324,14 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                           text: TextSpan(
                             text: "Already have an account? ",
                             style: TextStyle(
-                              color: Colors.black.withOpacity(0.70),
+                              color: subtitleColor,
                               fontSize: 14,
                             ),
-                            children: const [
+                            children: [
                               TextSpan(
                                 text: "Log In",
                                 style: TextStyle(
-                                  color: Color.fromARGB(255, 20, 110, 80),
+                                  color: accent,
                                   fontWeight: FontWeight.bold,
                                   decoration: TextDecoration.underline,
                                 ),

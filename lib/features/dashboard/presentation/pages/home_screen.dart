@@ -36,11 +36,27 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDarkTheme = theme.brightness == Brightness.dark;
+
+    final shellBackground = isDarkTheme
+        ? const Color.fromARGB(255, 16, 22, 28)
+        : const Color.fromARGB(255, 245, 248, 247);
+    final appBarColor = isDarkTheme
+        ? const Color.fromARGB(255, 24, 30, 36)
+        : const Color.fromARGB(255, 20, 110, 80);
+    final navBackground = isDarkTheme
+        ? const Color.fromARGB(255, 24, 30, 36)
+        : Colors.white;
+    final selectedColor = isDarkTheme
+        ? const Color.fromARGB(255, 126, 215, 181)
+        : const Color.fromARGB(255, 20, 110, 80);
+
     return Scaffold(
       // ✅ UI ONLY: theme background
-      backgroundColor: const Color.fromARGB(255, 245, 248, 247),
+      backgroundColor: shellBackground,
       appBar: AppBar(
-        backgroundColor: const Color.fromARGB(255, 20, 110, 80),
+        backgroundColor: appBarColor,
         elevation: 0,
         centerTitle: true,
         title: Row(
@@ -70,9 +86,9 @@ class _HomeScreenState extends State<HomeScreen> {
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
         onTap: (index) => setState(() => _currentIndex = index),
-        selectedItemColor: const Color.fromARGB(255, 20, 110, 80),
-        unselectedItemColor: Colors.black54,
-        backgroundColor: Colors.white,
+        selectedItemColor: selectedColor,
+        unselectedItemColor: isDarkTheme ? Colors.white60 : Colors.black54,
+        backgroundColor: navBackground,
         type: BottomNavigationBarType.fixed,
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home_rounded), label: 'Home'),
@@ -115,6 +131,22 @@ class _HomePageBodyState extends State<HomePageBody> {
   ];
 
   List<Map<String, dynamic>> _venues = [];
+
+    bool get _isDarkTheme => Theme.of(context).brightness == Brightness.dark;
+    Color get _bgTop => _isDarkTheme
+      ? const Color.fromARGB(255, 32, 39, 46)
+      : const Color.fromARGB(255, 145, 240, 211);
+    Color get _bgBottom => _isDarkTheme
+      ? const Color.fromARGB(255, 18, 23, 30)
+      : const Color.fromARGB(255, 108, 238, 158);
+    Color get _surface =>
+      _isDarkTheme ? const Color.fromARGB(255, 27, 36, 44) : Colors.white;
+    Color get _textPrimary => _isDarkTheme ? Colors.white : Colors.black;
+    Color get _textSecondary => _isDarkTheme ? Colors.white70 : Colors.black54;
+    Color get _accent => _isDarkTheme
+      ? const Color.fromARGB(255, 126, 215, 181)
+      : const Color.fromARGB(255, 7, 151, 138);
+    Color get _border => _isDarkTheme ? Colors.white24 : Colors.black12;
 
   double? _parsePrice(dynamic value) {
     if (value == null) return null;
@@ -282,17 +314,17 @@ class _HomePageBodyState extends State<HomePageBody> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: _surface,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.black12),
+        border: Border.all(color: _border),
       ),
       child: DropdownButtonHideUnderline(
         child: DropdownButton<String>(
           value: _priceSort,
           borderRadius: BorderRadius.circular(12),
-          icon: const Icon(Icons.keyboard_arrow_down_rounded),
-          style: const TextStyle(
-            color: Colors.black87,
+          icon: Icon(Icons.keyboard_arrow_down_rounded, color: _textSecondary),
+          style: TextStyle(
+            color: _textPrimary,
             fontSize: 13,
             fontWeight: FontWeight.w600,
           ),
@@ -317,9 +349,9 @@ class _HomePageBodyState extends State<HomePageBody> {
     return Container(
       height: 46,
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: _surface,
         borderRadius: BorderRadius.circular(25),
-        border: Border.all(color: Colors.black12),
+        border: Border.all(color: _border),
       ),
       child: Row(
         children: [
@@ -330,13 +362,13 @@ class _HomePageBodyState extends State<HomePageBody> {
               onChanged: (_) => setState(() {}),
               decoration: InputDecoration(
                 hintText: 'Search courts, venues...',
-                hintStyle: const TextStyle(color: Colors.black45),
+                hintStyle: TextStyle(color: _textSecondary),
                 border: InputBorder.none,
                 isDense: true,
                 suffixIcon: _searchController.text.isEmpty
                     ? null
                     : IconButton(
-                        icon: const Icon(Icons.close, size: 18, color: Colors.black54),
+                        icon: Icon(Icons.close, size: 18, color: _textSecondary),
                         onPressed: () {
                           _searchController.clear();
                           setState(() {});
@@ -345,7 +377,7 @@ class _HomePageBodyState extends State<HomePageBody> {
               ),
             ),
           ),
-          const Icon(Icons.search, color: Colors.black54),
+          Icon(Icons.search, color: _textSecondary),
           const SizedBox(width: 16),
         ],
       ),
@@ -361,15 +393,17 @@ class _HomePageBodyState extends State<HomePageBody> {
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
         decoration: BoxDecoration(
           color: isSelected
-              ? const Color.fromARGB(255, 7, 151, 138)
-              : const Color.fromARGB(255, 240, 242, 243),
+              ? _accent
+              : _surface,
           borderRadius: BorderRadius.circular(24),
           boxShadow: isSelected
-              ? const [
+              ? [
                   BoxShadow(
-                    color: Color.fromARGB(90, 0, 122, 107),
+                    color: _isDarkTheme
+                        ? Colors.black38
+                        : const Color.fromARGB(90, 0, 122, 107),
                     blurRadius: 10,
-                    offset: Offset(0, 4),
+                    offset: const Offset(0, 4),
                   ),
                 ]
               : [],
@@ -381,7 +415,7 @@ class _HomePageBodyState extends State<HomePageBody> {
             fontWeight: FontWeight.w500,
             color: isSelected
                 ? Colors.white
-                : const Color.fromARGB(255, 28, 53, 84),
+                : _textPrimary,
           ),
         ),
       ),
@@ -392,13 +426,13 @@ class _HomePageBodyState extends State<HomePageBody> {
   Widget build(BuildContext context) {
     return Container(
       // ✅ UI ONLY: matchpoint theme background
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
           colors: [
-            Color.fromARGB(255, 145, 240, 211),
-            Color.fromARGB(255, 108, 238, 158),
+            _bgTop,
+            _bgBottom,
           ],
         ),
       ),
@@ -422,12 +456,12 @@ class _HomePageBodyState extends State<HomePageBody> {
 
                     const SizedBox(height: 16),
 
-                    const Text(
+                    Text(
                       'Sports',
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
-                        color: Colors.black,
+                        color: _textPrimary,
                       ),
                     ),
                     const SizedBox(height: 10),
@@ -462,12 +496,12 @@ class _HomePageBodyState extends State<HomePageBody> {
 
                     Row(
                       children: [
-                        const Text(
+                        Text(
                           'Available Courts',
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
-                            color: Colors.black,
+                            color: _textPrimary,
                           ),
                         ),
                         const Spacer(),
@@ -491,9 +525,12 @@ class _HomePageBodyState extends State<HomePageBody> {
                         ),
                       )
                     else if (_filteredVenues.isEmpty)
-                      const Padding(
-                        padding: EdgeInsets.symmetric(vertical: 8),
-                        child: Text('No courts available for selected sport.'),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 8),
+                        child: Text(
+                          'No courts available for selected sport.',
+                          style: TextStyle(color: _textSecondary),
+                        ),
                       )
                     else
                       ListView.separated(
@@ -513,6 +550,7 @@ class _HomePageBodyState extends State<HomePageBody> {
                                 (v['sports'] as List<String>? ?? const <String>[]),
                             amenities: (v['amenities'] as List<String>? ?? const <String>[]),
                             pricePerHour: v['price'] as double?,
+                            isDarkTheme: _isDarkTheme,
                             onViewSlots: () async {
                               final courtId = (v['id'] ?? '').toString();
                               if (courtId.isEmpty) {
@@ -562,6 +600,7 @@ class SimpleVenueCard extends StatelessWidget {
   final List<String> sports;
   final List<String> amenities;
   final double? pricePerHour;
+  final bool isDarkTheme;
   final VoidCallback onViewSlots;
 
   const SimpleVenueCard({
@@ -574,21 +613,35 @@ class SimpleVenueCard extends StatelessWidget {
     required this.sports,
     required this.amenities,
     required this.pricePerHour,
+    required this.isDarkTheme,
     required this.onViewSlots,
   });
 
   @override
   Widget build(BuildContext context) {
+    final cardColor = isDarkTheme
+        ? const Color.fromARGB(255, 33, 42, 50)
+        : const Color.fromARGB(255, 236, 250, 243);
+    final cardBorder = isDarkTheme ? Colors.white24 : const Color.fromARGB(255, 178, 223, 205);
+    final primaryText = isDarkTheme ? Colors.white : Colors.black;
+    final secondaryText = isDarkTheme ? Colors.white70 : Colors.black54;
+    final accent = isDarkTheme
+        ? const Color.fromARGB(255, 126, 215, 181)
+        : const Color.fromARGB(255, 20, 110, 80);
+    final chipBg = isDarkTheme
+        ? const Color.fromARGB(255, 39, 49, 58)
+        : const Color.fromARGB(255, 227, 248, 241);
+
     final isNetworkImage = imagePath.startsWith('http');
     final shownSports = sports.take(3).toList();
 
     return Card(
-      color: const Color.fromARGB(255, 236, 250, 243),
-      shadowColor: const Color.fromARGB(70, 16, 94, 67),
+      color: cardColor,
+      shadowColor: isDarkTheme ? Colors.black26 : const Color.fromARGB(70, 16, 94, 67),
       elevation: 4,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(18),
-        side: const BorderSide(color: Color.fromARGB(255, 178, 223, 205)),
+        side: BorderSide(color: cardBorder),
       ),
       clipBehavior: Clip.antiAlias,
       child: Column(
@@ -604,17 +657,17 @@ class SimpleVenueCard extends StatelessWidget {
                     fit: BoxFit.cover,
                     errorBuilder: (context, error, stackTrace) {
                       return Container(
-                        color: Colors.black12,
-                        child: const Center(
-                          child: Icon(Icons.broken_image, size: 40),
+                        color: isDarkTheme ? Colors.white10 : Colors.black12,
+                        child: Center(
+                          child: Icon(Icons.broken_image, size: 40, color: secondaryText),
                         ),
                       );
                     },
                   )
                 : Container(
-                    color: Colors.black12,
-                    child: const Center(
-                      child: Icon(Icons.image_not_supported, size: 40),
+                    color: isDarkTheme ? Colors.white10 : Colors.black12,
+                    child: Center(
+                      child: Icon(Icons.image_not_supported, size: 40, color: secondaryText),
                     ),
                   ),
           ),
@@ -625,23 +678,24 @@ class SimpleVenueCard extends StatelessWidget {
               children: [
                 Text(
                   title,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 32,
                     fontWeight: FontWeight.w700,
+                    color: primaryText,
                   ),
                 ),
                 const SizedBox(height: 6),
                 Row(
                   children: [
-                    const Icon(Icons.location_on,
-                        size: 14, color: Colors.black45),
+                    Icon(Icons.location_on,
+                        size: 14, color: secondaryText),
                     const SizedBox(width: 4),
                     Expanded(
                       child: Text(
                         location,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 13,
-                          color: Colors.black54,
+                          color: secondaryText,
                         ),
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -659,18 +713,18 @@ class SimpleVenueCard extends StatelessWidget {
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 12, vertical: 6),
                             decoration: BoxDecoration(
-                              color: const Color.fromARGB(255, 227, 248, 241),
+                              color: chipBg,
                               borderRadius: BorderRadius.circular(16),
                               border: Border.all(
-                                color: const Color.fromARGB(255, 130, 224, 201),
+                                color: cardBorder,
                               ),
                             ),
                             child: Text(
                               sport,
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontSize: 13,
                                 fontWeight: FontWeight.w500,
-                                color: Color.fromARGB(255, 20, 110, 80),
+                                color: accent,
                               ),
                             ),
                           ),
@@ -687,10 +741,10 @@ class SimpleVenueCard extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text(
+                          Text(
                             'From',
                             style: TextStyle(
-                              color: Colors.black54,
+                              color: secondaryText,
                               fontSize: 16,
                             ),
                           ),
@@ -700,17 +754,17 @@ class SimpleVenueCard extends StatelessWidget {
                               text: pricePerHour != null
                                   ? '₹${pricePerHour!.toStringAsFixed(0)}'
                                   : 'N/A',
-                              style: const TextStyle(
-                                color: Color.fromARGB(255, 9, 32, 68),
+                              style: TextStyle(
+                                color: primaryText,
                                 fontSize: 34,
                                 fontWeight: FontWeight.w700,
                               ),
                               children: pricePerHour != null
-                                  ? const [
+                                  ? [
                                       TextSpan(
                                         text: ' /hr',
                                         style: TextStyle(
-                                          color: Colors.black54,
+                                          color: secondaryText,
                                           fontSize: 18,
                                           fontWeight: FontWeight.w500,
                                         ),
@@ -725,7 +779,7 @@ class SimpleVenueCard extends StatelessWidget {
                     ElevatedButton(
                       onPressed: onViewSlots,
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color.fromARGB(255, 7, 151, 138),
+                        backgroundColor: accent,
                         foregroundColor: Colors.white,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),

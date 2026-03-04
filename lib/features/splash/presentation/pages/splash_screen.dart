@@ -65,16 +65,26 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
 
   @override
   Widget build(BuildContext context) {
+    final isDarkTheme = Theme.of(context).brightness == Brightness.dark;
+    final gradientTop = isDarkTheme
+        ? const Color.fromARGB(255, 32, 39, 46)
+        : const Color.fromARGB(255, 145, 240, 211);
+    final gradientBottom = isDarkTheme
+        ? const Color.fromARGB(255, 18, 23, 30)
+        : const Color.fromARGB(255, 108, 238, 158);
+
     return Scaffold(
-      backgroundColor: const Color.fromARGB(137, 255, 255, 255),
+      backgroundColor: isDarkTheme
+          ? const Color.fromARGB(255, 16, 22, 28)
+          : const Color.fromARGB(137, 255, 255, 255),
       body: Container(
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
-              Color.fromARGB(255, 145, 240, 211),
-              Color.fromARGB(255, 108, 238, 158),
+              gradientTop,
+              gradientBottom,
             ],
           ),
         ),
@@ -92,7 +102,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                   "MatchPoint",
                   style: GoogleFonts.audiowide(
                     fontSize: 35,
-                    color: Colors.black,
+                    color: isDarkTheme ? Colors.white : Colors.black,
                   ),
                 ),
               ],

@@ -115,6 +115,32 @@ class _MoviesScreenState extends ConsumerState<MoviesScreen> {
   List<BookingItem> _allBookings = const [];
   String _activeFilter = 'All';
 
+    bool get _isDarkTheme => Theme.of(context).brightness == Brightness.dark;
+    Color get _surface =>
+      _isDarkTheme ? const Color.fromARGB(255, 16, 22, 28) : AppTheme.surface;
+    Color get _surface2 =>
+      _isDarkTheme ? const Color.fromARGB(255, 27, 36, 44) : AppTheme.surface2;
+    Color get _pageTop => _isDarkTheme
+      ? const Color.fromARGB(255, 32, 39, 46)
+      : AppTheme.pageTop;
+    Color get _pageBottom => _isDarkTheme
+      ? const Color.fromARGB(255, 18, 23, 30)
+      : AppTheme.pageBottom;
+    Color get _cardTint => _isDarkTheme
+      ? const Color.fromARGB(255, 33, 42, 50)
+      : AppTheme.cardTint;
+    Color get _softTint => _isDarkTheme
+      ? const Color.fromARGB(255, 39, 49, 58)
+      : AppTheme.softTint;
+    Color get _greenBorder => _isDarkTheme ? Colors.white24 : AppTheme.greenBorder;
+    Color get _textPrimary => _isDarkTheme ? Colors.white : AppTheme.textPrimary;
+    Color get _textSecondary =>
+      _isDarkTheme ? Colors.white70 : AppTheme.textSecondary;
+    Color get _divider => _isDarkTheme ? Colors.white24 : AppTheme.divider;
+    Color get _accent => _isDarkTheme
+      ? const Color.fromARGB(255, 126, 215, 181)
+      : AppTheme.accentBlue;
+
   @override
   void initState() {
     super.initState();
@@ -338,13 +364,13 @@ class _MoviesScreenState extends ConsumerState<MoviesScreen> {
     final filteredBookings = _filteredBookings;
 
     return Scaffold(
-      backgroundColor: AppTheme.surface,
+      backgroundColor: _surface,
       body: Container(
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [AppTheme.pageTop, AppTheme.pageBottom],
+            colors: [_pageTop, _pageBottom],
           ),
         ),
         child: SafeArea(
@@ -359,10 +385,10 @@ class _MoviesScreenState extends ConsumerState<MoviesScreen> {
                         children: [
                           Row(
                             children: [
-                              const Text(
+                              Text(
                                 'My Bookings',
                                 style: TextStyle(
-                                  color: AppTheme.textPrimary,
+                                  color: _textPrimary,
                                   fontWeight: FontWeight.w800,
                                   fontSize: 22,
                                 ),
@@ -371,7 +397,7 @@ class _MoviesScreenState extends ConsumerState<MoviesScreen> {
                               IconButton(
                                 onPressed: _isLoading ? null : _loadBookings,
                                 icon: const Icon(Icons.refresh_rounded),
-                                color: AppTheme.textPrimary,
+                                color: _textPrimary,
                               ),
                             ],
                           ),
@@ -409,14 +435,14 @@ class _MoviesScreenState extends ConsumerState<MoviesScreen> {
             label: Text(label),
             selected: selected,
             onSelected: (_) => setState(() => _activeFilter = label),
-            selectedColor: AppTheme.accentBlue,
-            backgroundColor: const Color.fromARGB(255, 240, 242, 243),
+            selectedColor: _accent,
+            backgroundColor: _surface2,
             labelStyle: TextStyle(
-              color: selected ? AppTheme.white : AppTheme.textSecondary,
+              color: selected ? Colors.white : _textSecondary,
               fontWeight: FontWeight.w600,
             ),
             side: BorderSide(
-              color: selected ? AppTheme.accentBlue : Colors.transparent,
+              color: selected ? _accent : Colors.transparent,
             ),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(24),
@@ -431,25 +457,26 @@ class _MoviesScreenState extends ConsumerState<MoviesScreen> {
     return TextField(
       controller: _searchController,
       onChanged: (_) => setState(() {}),
-      style: const TextStyle(color: AppTheme.textPrimary),
+      style: TextStyle(color: _textPrimary),
+      cursorColor: _accent,
       decoration: InputDecoration(
         hintText: 'Search by venue, location, sport',
-        hintStyle: const TextStyle(color: Colors.black45),
-        prefixIcon: const Icon(Icons.search_rounded, color: Colors.black54),
+        hintStyle: TextStyle(color: _textSecondary),
+        prefixIcon: Icon(Icons.search_rounded, color: _textSecondary),
         filled: true,
-        fillColor: AppTheme.surface2,
+        fillColor: _surface2,
         contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(25),
-          borderSide: const BorderSide(color: AppTheme.divider),
+          borderSide: BorderSide(color: _divider),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(25),
-          borderSide: const BorderSide(color: AppTheme.divider),
+          borderSide: BorderSide(color: _divider),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(25),
-          borderSide: const BorderSide(color: AppTheme.accentBlue, width: 1.2),
+          borderSide: BorderSide(color: _accent, width: 1.2),
         ),
       ),
     );
@@ -458,8 +485,8 @@ class _MoviesScreenState extends ConsumerState<MoviesScreen> {
   Widget _buildActionRow() {
     return Text(
       '${_filteredBookings.length} bookings',
-      style: const TextStyle(
-        color: AppTheme.textPrimary,
+      style: TextStyle(
+        color: _textPrimary,
         fontWeight: FontWeight.w600,
       ),
     );
@@ -481,14 +508,14 @@ class _MoviesScreenState extends ConsumerState<MoviesScreen> {
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       decoration: BoxDecoration(
-        color: AppTheme.cardTint,
+        color: _cardTint,
         borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: AppTheme.greenBorder),
-        boxShadow: const [
+        border: Border.all(color: _greenBorder),
+        boxShadow: [
           BoxShadow(
-            color: Color.fromARGB(70, 16, 94, 67),
+            color: _isDarkTheme ? Colors.black26 : const Color.fromARGB(70, 16, 94, 67),
             blurRadius: 8,
-            offset: Offset(0, 3),
+            offset: const Offset(0, 3),
           ),
         ],
       ),
@@ -518,8 +545,8 @@ class _MoviesScreenState extends ConsumerState<MoviesScreen> {
                     Expanded(
                       child: Text(
                         item.venue,
-                        style: const TextStyle(
-                          color: AppTheme.textPrimary,
+                        style: TextStyle(
+                          color: _textPrimary,
                           fontSize: 16,
                           fontWeight: FontWeight.w700,
                         ),
@@ -548,12 +575,12 @@ class _MoviesScreenState extends ConsumerState<MoviesScreen> {
                 const SizedBox(height: 8),
                 Row(
                   children: [
-                    const Icon(Icons.location_on_outlined, size: 16, color: AppTheme.textSecondary),
+                    Icon(Icons.location_on_outlined, size: 16, color: _textSecondary),
                     const SizedBox(width: 6),
                     Expanded(
                       child: Text(
                         item.location,
-                        style: const TextStyle(color: AppTheme.textSecondary),
+                        style: TextStyle(color: _textSecondary),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -563,29 +590,29 @@ class _MoviesScreenState extends ConsumerState<MoviesScreen> {
                 const SizedBox(height: 6),
                 Row(
                   children: [
-                    const Icon(Icons.sports_tennis_rounded, size: 16, color: AppTheme.textSecondary),
+                    Icon(Icons.sports_tennis_rounded, size: 16, color: _textSecondary),
                     const SizedBox(width: 6),
-                    Text(item.sport, style: const TextStyle(color: AppTheme.textSecondary)),
+                    Text(item.sport, style: TextStyle(color: _textSecondary)),
                     const SizedBox(width: 12),
-                    const Icon(Icons.calendar_month_rounded, size: 16, color: AppTheme.textSecondary),
+                    Icon(Icons.calendar_month_rounded, size: 16, color: _textSecondary),
                     const SizedBox(width: 6),
-                    Text(dateLabel, style: const TextStyle(color: AppTheme.textSecondary)),
+                    Text(dateLabel, style: TextStyle(color: _textSecondary)),
                   ],
                 ),
                 const SizedBox(height: 6),
                 Row(
                   children: [
-                    const Icon(Icons.access_time_rounded, size: 16, color: AppTheme.textSecondary),
+                    Icon(Icons.access_time_rounded, size: 16, color: _textSecondary),
                     const SizedBox(width: 6),
                     Text(
                       _formatTimeLabel(timeLabel),
-                      style: const TextStyle(color: AppTheme.textSecondary),
+                      style: TextStyle(color: _textSecondary),
                     ),
                     const Spacer(),
                     Text(
                       'NPR ${item.price.toStringAsFixed(0)}',
-                      style: const TextStyle(
-                        color: AppTheme.textPrimary,
+                      style: TextStyle(
+                        color: _textPrimary,
                         fontSize: 15,
                         fontWeight: FontWeight.w800,
                       ),
@@ -600,8 +627,8 @@ class _MoviesScreenState extends ConsumerState<MoviesScreen> {
                     icon: const Icon(Icons.visibility_outlined, size: 18),
                     label: const Text('View details'),
                     style: OutlinedButton.styleFrom(
-                      foregroundColor: AppTheme.accentBlue,
-                      side: const BorderSide(color: AppTheme.accentBlue),
+                      foregroundColor: _accent,
+                      side: BorderSide(color: _accent),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),
@@ -619,9 +646,9 @@ class _MoviesScreenState extends ConsumerState<MoviesScreen> {
 
   Widget _fallbackImage() {
     return Container(
-      color: const Color.fromARGB(255, 227, 248, 241),
-      child: const Center(
-        child: Icon(Icons.event_available_rounded, color: AppTheme.accentBlue, size: 34),
+      color: _softTint,
+      child: Center(
+        child: Icon(Icons.event_available_rounded, color: _accent, size: 34),
       ),
     );
   }
@@ -727,13 +754,13 @@ class _MoviesScreenState extends ConsumerState<MoviesScreen> {
             padding: const EdgeInsets.fromLTRB(10, 10, 10, 12),
             child: Container(
               decoration: BoxDecoration(
-                color: AppTheme.cardTint,
+                color: _cardTint,
                 borderRadius: BorderRadius.circular(20),
-                boxShadow: const [
+                boxShadow: [
                   BoxShadow(
-                    color: Color.fromARGB(70, 16, 94, 67),
+                    color: _isDarkTheme ? Colors.black26 : const Color.fromARGB(70, 16, 94, 67),
                     blurRadius: 16,
-                    offset: Offset(0, 8),
+                    offset: const Offset(0, 8),
                   ),
                 ],
               ),
@@ -812,19 +839,19 @@ class _MoviesScreenState extends ConsumerState<MoviesScreen> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                const Text(
+                                Text(
                                   'Booking Summary',
                                   style: TextStyle(
-                                    color: AppTheme.textPrimary,
+                                    color: _textPrimary,
                                     fontSize: 16,
                                     fontWeight: FontWeight.w800,
                                   ),
                                 ),
                                 const SizedBox(height: 6),
-                                const Text(
+                                Text(
                                   'BOOKING ID',
                                   style: TextStyle(
-                                    color: AppTheme.accentBlue,
+                                    color: _accent,
                                     fontSize: 11,
                                     fontWeight: FontWeight.w800,
                                     letterSpacing: 0.4,
@@ -832,8 +859,8 @@ class _MoviesScreenState extends ConsumerState<MoviesScreen> {
                                 ),
                                 Text(
                                   _displayBookingCode(item),
-                                  style: const TextStyle(
-                                    color: AppTheme.textPrimary,
+                                  style: TextStyle(
+                                    color: _textPrimary,
                                     fontSize: 34,
                                     fontWeight: FontWeight.w700,
                                   ),
@@ -844,18 +871,18 @@ class _MoviesScreenState extends ConsumerState<MoviesScreen> {
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.end,
                             children: [
-                              const Text(
+                              Text(
                                 'Paid',
                                 style: TextStyle(
-                                  color: AppTheme.textSecondary,
+                                  color: _textSecondary,
                                   fontSize: 13,
                                   fontWeight: FontWeight.w600,
                                 ),
                               ),
                               Text(
                                 'NPR ${item.price.toStringAsFixed(0)}',
-                                style: const TextStyle(
-                                  color: AppTheme.textPrimary,
+                                style: TextStyle(
+                                  color: _textPrimary,
                                   fontSize: 20,
                                   fontWeight: FontWeight.w800,
                                 ),
@@ -871,23 +898,23 @@ class _MoviesScreenState extends ConsumerState<MoviesScreen> {
                         width: double.infinity,
                         padding: const EdgeInsets.fromLTRB(10, 10, 10, 8),
                         decoration: BoxDecoration(
-                          color: AppTheme.softTint,
+                          color: _softTint,
                           borderRadius: BorderRadius.circular(14),
-                          border: Border.all(color: AppTheme.greenBorder),
+                          border: Border.all(color: _greenBorder),
                         ),
                         child: Column(
                           children: [
                             QrImageView(
                               data: _qrPayload(item),
                               size: 108,
-                              backgroundColor: Colors.white,
+                              backgroundColor: _isDarkTheme ? Colors.white : Colors.white,
                             ),
                             const SizedBox(height: 4),
-                            const Text(
+                            Text(
                               'Scan for Booking ID',
                               textAlign: TextAlign.center,
                               style: TextStyle(
-                                color: AppTheme.textSecondary,
+                                color: _textSecondary,
                                 fontSize: 11,
                                 fontWeight: FontWeight.w600,
                               ),
@@ -902,9 +929,9 @@ class _MoviesScreenState extends ConsumerState<MoviesScreen> {
                       child: Container(
                         width: double.infinity,
                         decoration: BoxDecoration(
-                          color: AppTheme.softTint,
+                          color: _softTint,
                           borderRadius: BorderRadius.circular(14),
-                          border: Border.all(color: AppTheme.greenBorder),
+                          border: Border.all(color: _greenBorder),
                         ),
                         padding: const EdgeInsets.fromLTRB(14, 12, 14, 12),
                         child: Column(
@@ -955,8 +982,8 @@ class _MoviesScreenState extends ConsumerState<MoviesScreen> {
                           OutlinedButton(
                             onPressed: () => Navigator.of(context).pop(),
                             style: OutlinedButton.styleFrom(
-                              side: const BorderSide(color: AppTheme.divider),
-                              foregroundColor: AppTheme.textPrimary,
+                              side: BorderSide(color: _divider),
+                              foregroundColor: _textPrimary,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(12),
                               ),
@@ -979,20 +1006,20 @@ class _MoviesScreenState extends ConsumerState<MoviesScreen> {
   Widget _detailRow(IconData icon, String label, String value) {
     return Row(
       children: [
-        Icon(icon, size: 18, color: AppTheme.textSecondary),
+        Icon(icon, size: 18, color: _textSecondary),
         const SizedBox(width: 8),
         Text(
           '$label: ',
-          style: const TextStyle(
-            color: AppTheme.textSecondary,
+          style: TextStyle(
+            color: _textSecondary,
             fontWeight: FontWeight.w600,
           ),
         ),
         Expanded(
           child: Text(
             value,
-            style: const TextStyle(
-              color: AppTheme.textPrimary,
+            style: TextStyle(
+              color: _textPrimary,
               fontWeight: FontWeight.w600,
             ),
           ),
@@ -1080,6 +1107,8 @@ class _ErrorState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDarkTheme = Theme.of(context).brightness == Brightness.dark;
+    final textPrimary = isDarkTheme ? Colors.white : AppTheme.textPrimary;
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(20),
@@ -1091,7 +1120,7 @@ class _ErrorState extends StatelessWidget {
             Text(
               message,
               textAlign: TextAlign.center,
-              style: const TextStyle(color: AppTheme.textPrimary),
+              style: TextStyle(color: textPrimary),
             ),
             const SizedBox(height: 14),
             ElevatedButton(onPressed: onRetry, child: const Text('Try again')),
@@ -1107,25 +1136,33 @@ class _EmptyState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDarkTheme = Theme.of(context).brightness == Brightness.dark;
+    final cardTint = isDarkTheme
+        ? const Color.fromARGB(255, 33, 42, 50)
+        : AppTheme.cardTint;
+    final borderColor = isDarkTheme ? Colors.white24 : AppTheme.greenBorder;
+    final textPrimary = isDarkTheme ? Colors.white : AppTheme.textPrimary;
+    final textSecondary = isDarkTheme ? Colors.white70 : AppTheme.textSecondary;
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 30),
       decoration: BoxDecoration(
-        color: AppTheme.cardTint,
+        color: cardTint,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppTheme.greenBorder),
+        border: Border.all(color: borderColor),
       ),
-      child: const Column(
+      child: Column(
         children: [
-          Icon(Icons.inbox_rounded, size: 36, color: AppTheme.textSecondary),
-          SizedBox(height: 8),
+          Icon(Icons.inbox_rounded, size: 36, color: textSecondary),
+          const SizedBox(height: 8),
           Text(
             'No bookings found',
-            style: TextStyle(color: AppTheme.textPrimary, fontWeight: FontWeight.w700),
+            style: TextStyle(color: textPrimary, fontWeight: FontWeight.w700),
           ),
-          SizedBox(height: 4),
+          const SizedBox(height: 4),
           Text(
             'Your booking details will appear here.',
-            style: TextStyle(color: AppTheme.textSecondary),
+            style: TextStyle(color: textSecondary),
           ),
         ],
       ),

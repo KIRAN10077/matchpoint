@@ -40,6 +40,26 @@ class _CourtBookingPageState extends ConsumerState<CourtBookingPage> {
   String? _selectedSlot;
   Set<String> _bookedSlots = <String>{};
 
+    bool get _isDarkTheme => Theme.of(context).brightness == Brightness.dark;
+    Color get _accent => _isDarkTheme
+      ? const Color.fromARGB(255, 126, 215, 181)
+      : const Color.fromARGB(255, 20, 110, 80);
+    Color get _bgTop => _isDarkTheme
+      ? const Color.fromARGB(255, 32, 39, 46)
+      : const Color.fromARGB(255, 145, 240, 211);
+    Color get _bgBottom => _isDarkTheme
+      ? const Color.fromARGB(255, 18, 23, 30)
+      : const Color.fromARGB(255, 108, 238, 158);
+    Color get _card => _isDarkTheme
+      ? const Color.fromARGB(255, 33, 42, 50)
+      : const Color.fromARGB(255, 236, 250, 243);
+    Color get _softCard => _isDarkTheme
+      ? const Color.fromARGB(255, 39, 49, 58)
+      : const Color.fromARGB(255, 230, 247, 239);
+    Color get _border => _isDarkTheme ? Colors.white24 : const Color.fromARGB(255, 178, 223, 205);
+    Color get _textPrimary => _isDarkTheme ? Colors.white : const Color.fromARGB(255, 10, 38, 31);
+    Color get _textSecondary => _isDarkTheme ? Colors.white70 : const Color.fromARGB(255, 54, 86, 74);
+
   @override
   void initState() {
     super.initState();
@@ -268,7 +288,7 @@ class _CourtBookingPageState extends ConsumerState<CourtBookingPage> {
 
     final result = await showModalBottomSheet<bool>(
       context: context,
-      backgroundColor: Colors.white,
+      backgroundColor: _card,
       isScrollControlled: true,
       builder: (context) {
         return SafeArea(
@@ -278,9 +298,9 @@ class _CourtBookingPageState extends ConsumerState<CourtBookingPage> {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
+                Text(
                   'Confirm Booking Details',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700, color: _textPrimary),
                 ),
                 const SizedBox(height: 10),
                 _summaryRow('Court', (_court?['name'] ?? widget.fallbackTitle).toString()),
@@ -293,10 +313,10 @@ class _CourtBookingPageState extends ConsumerState<CourtBookingPage> {
                 const SizedBox(height: 8),
                 Text(
                   'Total: NPR ${(amountPaisa / 100).toStringAsFixed(0)}',
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.w800,
-                    color: Color.fromARGB(255, 20, 110, 80),
+                    color: _accent,
                   ),
                 ),
                 const SizedBox(height: 14),
@@ -306,7 +326,7 @@ class _CourtBookingPageState extends ConsumerState<CourtBookingPage> {
                   child: ElevatedButton(
                     onPressed: () => Navigator.of(context).pop(true),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color.fromARGB(255, 20, 110, 80),
+                      backgroundColor: _accent,
                       foregroundColor: Colors.white,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
@@ -335,8 +355,8 @@ class _CourtBookingPageState extends ConsumerState<CourtBookingPage> {
             width: 72,
             child: Text(
               '$label:',
-              style: const TextStyle(
-                color: Colors.black54,
+              style: TextStyle(
+                color: _textSecondary,
                 fontWeight: FontWeight.w600,
               ),
             ),
@@ -344,7 +364,7 @@ class _CourtBookingPageState extends ConsumerState<CourtBookingPage> {
           Expanded(
             child: Text(
               value,
-              style: const TextStyle(fontWeight: FontWeight.w600),
+              style: TextStyle(fontWeight: FontWeight.w600, color: _textPrimary),
             ),
           ),
         ],
@@ -500,7 +520,7 @@ class _CourtBookingPageState extends ConsumerState<CourtBookingPage> {
 
     await showModalBottomSheet<void>(
       context: context,
-      backgroundColor: Colors.white,
+      backgroundColor: _card,
       isDismissible: true,
       builder: (dialogContext) {
         return StatefulBuilder(
@@ -512,14 +532,14 @@ class _CourtBookingPageState extends ConsumerState<CourtBookingPage> {
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
+                    Text(
                       'Complete Khalti Payment',
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700, color: _textPrimary),
                     ),
                     const SizedBox(height: 8),
-                    const Text(
+                    Text(
                       'After successful payment in Khalti, tap Verify Payment to confirm booking.',
-                      style: TextStyle(color: Colors.black87),
+                      style: TextStyle(color: _textSecondary),
                     ),
                     const SizedBox(height: 14),
                     SizedBox(
@@ -552,7 +572,7 @@ class _CourtBookingPageState extends ConsumerState<CourtBookingPage> {
                                 }
                               },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color.fromARGB(255, 20, 110, 80),
+                          backgroundColor: _accent,
                           foregroundColor: Colors.white,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
@@ -674,17 +694,19 @@ class _CourtBookingPageState extends ConsumerState<CourtBookingPage> {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: const Color.fromARGB(255, 20, 110, 80),
+        backgroundColor: _isDarkTheme
+            ? const Color.fromARGB(255, 24, 30, 36)
+            : const Color.fromARGB(255, 20, 110, 80),
         title: Text(court?['name']?.toString() ?? widget.fallbackTitle),
       ),
       body: Container(
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
-              Color.fromARGB(255, 145, 240, 211),
-              Color.fromARGB(255, 108, 238, 158),
+              _bgTop,
+              _bgBottom,
             ],
           ),
         ),
@@ -722,16 +744,16 @@ class _CourtBookingPageState extends ConsumerState<CourtBookingPage> {
       child: Container(
         height: 190,
         width: double.infinity,
-        color: const Color.fromARGB(255, 236, 250, 243),
+        color: _card,
         child: image == null
-            ? const Center(
-                child: Icon(Icons.image_not_supported, size: 42, color: Color.fromARGB(255, 20, 110, 80)),
+            ? Center(
+                child: Icon(Icons.image_not_supported, size: 42, color: _accent),
               )
             : Image.network(
                 image,
                 fit: BoxFit.cover,
-                errorBuilder: (_, __, ___) => const Center(
-                  child: Icon(Icons.broken_image, size: 42, color: Color.fromARGB(255, 20, 110, 80)),
+                errorBuilder: (_, __, ___) => Center(
+                  child: Icon(Icons.broken_image, size: 42, color: _accent),
                 ),
               ),
       ),
@@ -750,23 +772,23 @@ class _CourtBookingPageState extends ConsumerState<CourtBookingPage> {
       width: double.infinity,
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: const Color.fromARGB(255, 236, 250, 243),
+        color: _card,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color.fromARGB(255, 178, 223, 205)),
+        border: Border.all(color: _border),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
+          Text(
             'About This Court',
-            style: TextStyle(fontSize: 22, fontWeight: FontWeight.w700, color: Color.fromARGB(255, 10, 38, 31)),
+            style: TextStyle(fontSize: 22, fontWeight: FontWeight.w700, color: _textPrimary),
           ),
           const SizedBox(height: 8),
           Text(
             (_court?['description']?.toString().trim().isNotEmpty ?? false)
                 ? _court!['description'].toString()
                 : (_court?['location']?.toString() ?? ''),
-            style: const TextStyle(color: Color.fromARGB(255, 44, 84, 68)),
+            style: TextStyle(color: _textSecondary),
           ),
           if (sports.isNotEmpty) ...[
             const SizedBox(height: 14),
@@ -783,16 +805,16 @@ class _CourtBookingPageState extends ConsumerState<CourtBookingPage> {
                     (sport) => Container(
                       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                       decoration: BoxDecoration(
-                        color: const Color.fromARGB(255, 227, 248, 241),
+                        color: _softCard,
                         borderRadius: BorderRadius.circular(16),
-                        border: Border.all(color: const Color.fromARGB(255, 130, 224, 201)),
+                        border: Border.all(color: _border),
                       ),
                       child: Text(
                         sport,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 12,
                           fontWeight: FontWeight.w600,
-                          color: Color.fromARGB(255, 20, 110, 80),
+                          color: _accent,
                         ),
                       ),
                     ),
@@ -815,13 +837,13 @@ class _CourtBookingPageState extends ConsumerState<CourtBookingPage> {
                     (amenity) => Container(
                       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
                       decoration: BoxDecoration(
-                        color: const Color.fromARGB(255, 245, 248, 247),
+                        color: _softCard,
                         borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: Colors.black12),
+                        border: Border.all(color: _border),
                       ),
                       child: Text(
                         amenity,
-                        style: const TextStyle(fontSize: 12),
+                        style: TextStyle(fontSize: 12, color: _textPrimary),
                       ),
                     ),
                   )
@@ -842,26 +864,26 @@ class _CourtBookingPageState extends ConsumerState<CourtBookingPage> {
       width: double.infinity,
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: const Color.fromARGB(255, 230, 247, 239),
+        color: _softCard,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color.fromARGB(255, 178, 223, 205)),
+        border: Border.all(color: _border),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             'Hourly Rate  NPR ${_priceValue.toStringAsFixed(0)}',
-            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w800, color: Color.fromARGB(255, 12, 38, 32)),
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800, color: _textPrimary),
           ),
           const SizedBox(height: 10),
           Row(
             children: [
-              const Icon(Icons.calendar_month_outlined, size: 18),
+              Icon(Icons.calendar_month_outlined, size: 18, color: _textSecondary),
               const SizedBox(width: 8),
               Expanded(
                 child: Text(
                   _formatDate(_selectedDate),
-                  style: const TextStyle(fontWeight: FontWeight.w600),
+                  style: TextStyle(fontWeight: FontWeight.w600, color: _textPrimary),
                 ),
               ),
               TextButton(
@@ -876,7 +898,7 @@ class _CourtBookingPageState extends ConsumerState<CourtBookingPage> {
                   setState(() => _selectedDate = selected);
                   await _loadAvailability();
                 },
-                child: const Text('Select Date'),
+                child: Text('Select Date', style: TextStyle(color: _accent)),
               ),
             ],
           ),
@@ -964,20 +986,20 @@ class _CourtBookingPageState extends ConsumerState<CourtBookingPage> {
                       : (_) {
                           setState(() => _selectedSlot = slot);
                         },
-                  selectedColor: const Color.fromARGB(255, 7, 151, 138),
+                  selectedColor: _accent,
                   disabledColor: Colors.red.shade100,
                   labelStyle: TextStyle(
                     color: isBooked
                         ? Colors.red.shade700
                         : isSelected
                             ? Colors.white
-                            : Colors.black87,
+                            : _textPrimary,
                     fontSize: 12,
                   ),
                   side: BorderSide(
                     color: isBooked
                         ? Colors.red.shade300
-                        : const Color.fromARGB(255, 178, 223, 205),
+                        : _border,
                   ),
                 );
               }).toList(),
@@ -1008,7 +1030,7 @@ class _CourtBookingPageState extends ConsumerState<CourtBookingPage> {
             child: ElevatedButton(
               onPressed: _canConfirm ? _bookCourt : null,
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color.fromARGB(255, 20, 110, 80),
+                backgroundColor: _accent,
                 foregroundColor: Colors.white,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
               ),
@@ -1041,6 +1063,7 @@ class _SlotLegendItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDarkTheme = Theme.of(context).brightness == Brightness.dark;
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -1055,9 +1078,9 @@ class _SlotLegendItem extends StatelessWidget {
         const SizedBox(width: 6),
         Text(
           label,
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 12,
-            color: Color.fromARGB(255, 54, 86, 74),
+            color: isDarkTheme ? Colors.white70 : const Color.fromARGB(255, 54, 86, 74),
             fontWeight: FontWeight.w600,
           ),
         ),

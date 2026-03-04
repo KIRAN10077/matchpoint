@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:matchpoint/core/providers/profile_provider.dart';
+import 'package:matchpoint/core/providers/theme_mode_provider.dart';
 import 'package:matchpoint/core/services/storage/user_session_service.dart';
 
 class ProfileScreen extends ConsumerStatefulWidget {
@@ -25,33 +26,71 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     final session = ref.read(userSessionServiceProvider);
     final state = ref.watch(profileProvider);
     final controller = ref.read(profileProvider.notifier);
+    final themeMode = ref.watch(themeModeProvider);
+    final isDarkMode = themeMode == ThemeMode.dark;
+    final theme = Theme.of(context);
+    final isDarkTheme = theme.brightness == Brightness.dark;
+
+    final appBarColor = isDarkTheme
+      ? const Color.fromARGB(255, 24, 30, 36)
+      : const Color.fromARGB(255, 20, 110, 80);
+    final gradientTop = isDarkTheme
+      ? const Color.fromARGB(255, 32, 39, 46)
+      : const Color.fromARGB(255, 145, 240, 211);
+    final gradientBottom = isDarkTheme
+      ? const Color.fromARGB(255, 18, 23, 30)
+      : const Color.fromARGB(255, 108, 238, 158);
+    final cardColor = isDarkTheme
+      ? const Color.fromARGB(255, 33, 42, 50)
+      : const Color.fromARGB(255, 230, 247, 239);
+    final cardColorSoft = isDarkTheme
+      ? const Color.fromARGB(255, 39, 49, 58)
+      : const Color.fromARGB(255, 236, 250, 243);
+    final titleColor = isDarkTheme
+      ? Colors.white
+      : const Color.fromARGB(255, 20, 44, 35);
+    final subtitleColor = isDarkTheme
+      ? Colors.white70
+      : const Color.fromARGB(255, 54, 86, 74);
+    final iconColor = isDarkTheme
+      ? const Color.fromARGB(255, 126, 215, 181)
+      : const Color.fromARGB(255, 20, 110, 80);
+    final trailingColor = isDarkTheme
+      ? Colors.white70
+      : const Color.fromARGB(255, 44, 84, 68);
 
     final name = session.getCurrentUserFullName() ?? "User";
     final email = session.getCurrentUserEmail() ?? "";
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: const Color.fromARGB(255, 20, 110, 80),
+        backgroundColor: appBarColor,
         elevation: 0,
         title: const Text("Profile"),
         centerTitle: true,
       ),
-      body: Container(
-        // ✅ ONLY background theme changed
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              Color.fromARGB(255, 145, 240, 211),
-              Color.fromARGB(255, 108, 238, 158),
-            ],
-          ),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            children: [
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          return Container(
+            // ✅ ONLY background theme changed
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+                  gradientTop,
+                  gradientBottom,
+                ],
+              ),
+            ),
+            child: SingleChildScrollView(
+              child: ConstrainedBox(
+                constraints: BoxConstraints(minHeight: constraints.maxHeight),
+                child: IntrinsicHeight(
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      children: [
               const SizedBox(height: 20),
 
               // ❌ UNCHANGED: avatar + name + email
@@ -60,20 +99,21 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                 children: [
                   CircleAvatar(
                     radius: 55,
-                    backgroundColor: Colors.grey.shade300,
+                    backgroundColor:
+                      isDarkTheme ? Colors.white12 : Colors.grey.shade300,
                     backgroundImage:
                         (state.imageUrl != null && state.imageUrl!.isNotEmpty)
                             ? NetworkImage(state.imageUrl!)
                             : null,
                     child: (state.imageUrl == null ||
                             state.imageUrl!.isEmpty)
-                        ? const Icon(Icons.person,
-                            size: 55, color: Colors.white)
+                      ? Icon(Icons.person,
+                        size: 55,
+                        color: isDarkTheme ? Colors.white70 : Colors.white)
                         : null,
                   ),
                   FloatingActionButton.small(
-                    backgroundColor:
-                        const Color.fromARGB(255, 20, 110, 80),
+                    backgroundColor: iconColor,
                     onPressed: state.loading
                         ? null
                         : () => _showPicker(context, controller),
@@ -86,43 +126,50 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
 
               Text(
                 name,
-                style:
-                    const TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w700,
+                  color: titleColor,
+                ),
               ),
               const SizedBox(height: 4),
               Text(email,
-                  style: TextStyle(color: Colors.grey.shade700)),
+                  style: TextStyle(
+                    color: isDarkTheme ? Colors.white70 : Colors.grey.shade700,
+                  )),
 
               const SizedBox(height: 16),
 
               Card(
                 elevation: 3,
-                shadowColor: const Color.fromARGB(70, 16, 94, 67),
+                shadowColor: isDarkTheme
+                    ? Colors.black26
+                    : const Color.fromARGB(70, 16, 94, 67),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(18),
                 ),
-                color: const Color.fromARGB(255, 236, 250, 243),
+                color: cardColorSoft,
                 child: ListTile(
-                  leading: const Icon(
+                  leading: Icon(
                     Icons.edit,
-                    color: Color.fromARGB(255, 20, 110, 80),
+                    color: iconColor,
                   ),
-                  title: const Text(
+                  title: Text(
                     "Edit Profile",
                     style: TextStyle(
                       fontWeight: FontWeight.w700,
-                      color: Color.fromARGB(255, 20, 44, 35),
+                      color: titleColor,
                     ),
                   ),
-                  subtitle: const Text(
+                  subtitle: Text(
                     "Update your name and email",
                     style: TextStyle(
-                      color: Color.fromARGB(255, 54, 86, 74),
+                      color: subtitleColor,
                     ),
                   ),
-                  trailing: const Icon(
+                  trailing: Icon(
                     Icons.chevron_right,
-                    color: Color.fromARGB(255, 44, 84, 68),
+                    color: trailingColor,
                   ),
                   onTap: state.loading
                       ? null
@@ -139,32 +186,34 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
 
               Card(
                 elevation: 3,
-                shadowColor: const Color.fromARGB(70, 16, 94, 67),
+                shadowColor: isDarkTheme
+                    ? Colors.black26
+                    : const Color.fromARGB(70, 16, 94, 67),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(18),
                 ),
-                color: const Color.fromARGB(255, 230, 247, 239),
+                color: cardColor,
                 child: ListTile(
-                  leading: const Icon(
+                  leading: Icon(
                     Icons.lock,
-                    color: Color.fromARGB(255, 20, 110, 80),
+                    color: iconColor,
                   ),
-                  title: const Text(
+                  title: Text(
                     "Change Password",
                     style: TextStyle(
                       fontWeight: FontWeight.w700,
-                      color: Color.fromARGB(255, 20, 44, 35),
+                      color: titleColor,
                     ),
                   ),
-                  subtitle: const Text(
+                  subtitle: Text(
                     "Update your account password",
                     style: TextStyle(
-                      color: Color.fromARGB(255, 54, 86, 74),
+                      color: subtitleColor,
                     ),
                   ),
-                  trailing: const Icon(
+                  trailing: Icon(
                     Icons.chevron_right,
-                    color: Color.fromARGB(255, 44, 84, 68),
+                    color: trailingColor,
                   ),
                   onTap: state.loading
                       ? null
@@ -174,10 +223,52 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
 
               const SizedBox(height: 12),
 
+              Card(
+                elevation: 3,
+                shadowColor: isDarkTheme
+                    ? Colors.black26
+                    : const Color.fromARGB(70, 16, 94, 67),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(18),
+                ),
+                color: cardColor,
+                child: ListTile(
+                  leading: Icon(
+                    isDarkMode ? Icons.dark_mode : Icons.light_mode,
+                    color: iconColor,
+                  ),
+                  title: Text(
+                    "Theme Mode",
+                    style: TextStyle(
+                      fontWeight: FontWeight.w700,
+                      color: titleColor,
+                    ),
+                  ),
+                  subtitle: Text(
+                    isDarkMode ? "Dark mode" : "Light mode",
+                    style: TextStyle(
+                      color: subtitleColor,
+                    ),
+                  ),
+                  trailing: Switch(
+                    value: isDarkMode,
+                    onChanged: (_) {
+                      ref.read(themeModeProvider.notifier).toggle();
+                    },
+                    activeColor: iconColor,
+                  ),
+                ),
+              ),
+
+              const SizedBox(height: 12),
+
               if (state.loading) ...[
                 const LinearProgressIndicator(),
                 const SizedBox(height: 10),
-                const Text("Saving..."),
+                Text(
+                  "Saving...",
+                  style: TextStyle(color: titleColor),
+                ),
               ],
 
               if (state.error != null) ...[
@@ -196,8 +287,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                 height: 54,
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor:
-                        const Color.fromARGB(255, 20, 110, 80),
+                    backgroundColor: iconColor,
                     foregroundColor: Colors.white,
                     elevation: 3,
                     shape: RoundedRectangleBorder(
@@ -236,14 +326,34 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
               ),
 
               const SizedBox(height: 16),
-            ],
-          ),
-        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          );
+        },
       ),
     );
   }
 
   Future<bool> _showLogoutConfirmation(BuildContext context) async {
+    final isDarkTheme = Theme.of(context).brightness == Brightness.dark;
+    final dialogBg = isDarkTheme
+      ? const Color.fromARGB(255, 24, 30, 36)
+      : const Color.fromARGB(255, 236, 250, 243);
+    final dialogBorder = isDarkTheme
+      ? Colors.white24
+      : const Color.fromARGB(255, 178, 223, 205);
+    final titleColor = isDarkTheme
+      ? Colors.white
+      : const Color.fromARGB(255, 20, 44, 35);
+    final bodyColor = isDarkTheme ? Colors.white70 : Colors.black87;
+    final accent = isDarkTheme
+      ? const Color.fromARGB(255, 126, 215, 181)
+      : const Color.fromARGB(255, 20, 110, 80);
+
     final result = await showGeneralDialog<bool>(
       context: context,
       barrierDismissible: true,
@@ -266,25 +376,29 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                   margin: const EdgeInsets.symmetric(horizontal: 28),
                   padding: const EdgeInsets.fromLTRB(18, 18, 18, 14),
                   decoration: BoxDecoration(
-                    color: const Color.fromARGB(255, 236, 250, 243),
+                    color: dialogBg,
                     borderRadius: BorderRadius.circular(18),
                     border: Border.all(
-                      color: const Color.fromARGB(255, 178, 223, 205),
+                      color: dialogBorder,
                     ),
                   ),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
+                      Text(
                         'Confirm Logout',
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.w700,
+                          color: titleColor,
                         ),
                       ),
                       const SizedBox(height: 10),
-                      const Text('Are you sure you want to logout?'),
+                      Text(
+                        'Are you sure you want to logout?',
+                        style: TextStyle(color: bodyColor),
+                      ),
                       const SizedBox(height: 14),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.end,
@@ -292,8 +406,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                           TextButton(
                             onPressed: () => Navigator.pop(dialogContext, false),
                             style: TextButton.styleFrom(
-                              foregroundColor:
-                                  const Color.fromARGB(255, 44, 84, 68),
+                              foregroundColor: accent,
                             ),
                             child: const Text('Cancel'),
                           ),
@@ -301,8 +414,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                           ElevatedButton(
                             onPressed: () => Navigator.pop(dialogContext, true),
                             style: ElevatedButton.styleFrom(
-                              backgroundColor:
-                                  const Color.fromARGB(255, 20, 110, 80),
+                              backgroundColor: accent,
                               foregroundColor: Colors.white,
                             ),
                             child: const Text('Logout'),
@@ -329,7 +441,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   void _showPicker(BuildContext context, ProfileController controller) {
     showModalBottomSheet(
       context: context,
-      builder: (_) => SafeArea(
+      builder: (sheetContext) => SafeArea(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -337,7 +449,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
               leading: const Icon(Icons.camera),
               title: const Text("Take photo"),
               onTap: () {
-                Navigator.pop(context);
+                Navigator.pop(sheetContext);
                 controller.pickAndUpload(ImageSource.camera);
               },
             ),
@@ -345,7 +457,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
               leading: const Icon(Icons.photo_library),
               title: const Text("Choose from gallery"),
               onTap: () {
-                Navigator.pop(context);
+                Navigator.pop(sheetContext);
                 controller.pickAndUpload(ImageSource.gallery);
               },
             ),
@@ -361,6 +473,36 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     required String initialName,
     required String initialEmail,
   }) {
+    final isDarkTheme = Theme.of(context).brightness == Brightness.dark;
+    final sheetBackground = isDarkTheme
+        ? const Color.fromARGB(255, 24, 30, 36)
+        : const Color.fromARGB(255, 236, 250, 243);
+    final sheetBorder = isDarkTheme
+        ? Colors.white24
+        : const Color.fromARGB(255, 178, 223, 205);
+    final titleColor = isDarkTheme
+        ? Colors.white
+        : const Color.fromARGB(255, 20, 44, 35);
+    final fieldTextColor = isDarkTheme ? Colors.white : Colors.black87;
+    final fieldLabelColor = isDarkTheme ? Colors.white70 : Colors.black54;
+    final fieldBorderColor = isDarkTheme ? Colors.white24 : Colors.black26;
+    final fieldFocusColor = isDarkTheme
+        ? const Color.fromARGB(255, 126, 215, 181)
+        : const Color.fromARGB(255, 20, 110, 80);
+
+    InputDecoration fieldDecoration(String label) {
+      return InputDecoration(
+        labelText: label,
+        labelStyle: TextStyle(color: fieldLabelColor),
+        enabledBorder: UnderlineInputBorder(
+          borderSide: BorderSide(color: fieldBorderColor),
+        ),
+        focusedBorder: UnderlineInputBorder(
+          borderSide: BorderSide(color: fieldFocusColor, width: 1.5),
+        ),
+      );
+    }
+
     final formKey = GlobalKey<FormState>();
     final nameController = TextEditingController(text: initialName);
     final emailController = TextEditingController(text: initialEmail);
@@ -398,12 +540,12 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                       margin: EdgeInsets.zero,
                       padding: const EdgeInsets.fromLTRB(20, 20, 20, 16),
                       decoration: BoxDecoration(
-                        color: const Color.fromARGB(255, 236, 250, 243),
+                        color: sheetBackground,
                         borderRadius: const BorderRadius.vertical(
                           top: Radius.circular(24),
                         ),
                         border: Border.all(
-                          color: const Color.fromARGB(255, 178, 223, 205),
+                          color: sheetBorder,
                         ),
                       ),
                       child: SingleChildScrollView(
@@ -413,17 +555,20 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                           mainAxisSize: MainAxisSize.min,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Text(
+                            Text(
                               'Edit Profile',
                               style: TextStyle(
                                 fontSize: 20,
                                 fontWeight: FontWeight.w700,
+                                color: titleColor,
                               ),
                             ),
                             const SizedBox(height: 16),
                             TextFormField(
                               controller: nameController,
-                              decoration: const InputDecoration(labelText: 'Name'),
+                              style: TextStyle(color: fieldTextColor),
+                              cursorColor: fieldFocusColor,
+                              decoration: fieldDecoration('Name'),
                               validator: (value) {
                                 final name = value?.trim() ?? '';
                                 if (name.isEmpty) return 'Name is required';
@@ -434,7 +579,9 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                             const SizedBox(height: 12),
                             TextFormField(
                               controller: emailController,
-                              decoration: const InputDecoration(labelText: 'Email'),
+                              style: TextStyle(color: fieldTextColor),
+                              cursorColor: fieldFocusColor,
+                              decoration: fieldDecoration('Email'),
                               keyboardType: TextInputType.emailAddress,
                               validator: (value) {
                                 final email = value?.trim() ?? '';
@@ -454,6 +601,9 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                               children: [
                                 TextButton(
                                   onPressed: () => Navigator.pop(sheetContext),
+                                  style: TextButton.styleFrom(
+                                    foregroundColor: fieldFocusColor,
+                                  ),
                                   child: const Text('Cancel'),
                                 ),
                                 const SizedBox(width: 8),
@@ -485,8 +635,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                                     );
                                   },
                                   style: ElevatedButton.styleFrom(
-                                    backgroundColor:
-                                        const Color.fromARGB(255, 20, 110, 80),
+                                    backgroundColor: fieldFocusColor,
                                     foregroundColor: Colors.white,
                                   ),
                                   child: const Text('Update'),
@@ -519,6 +668,36 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     BuildContext context,
     ProfileController controller,
   ) {
+    final isDarkTheme = Theme.of(context).brightness == Brightness.dark;
+    final sheetBackground = isDarkTheme
+        ? const Color.fromARGB(255, 24, 30, 36)
+        : const Color.fromARGB(255, 230, 247, 239);
+    final sheetBorder = isDarkTheme
+        ? Colors.white24
+        : const Color.fromARGB(255, 178, 223, 205);
+    final titleColor = isDarkTheme
+        ? Colors.white
+        : const Color.fromARGB(255, 20, 44, 35);
+    final fieldTextColor = isDarkTheme ? Colors.white : Colors.black87;
+    final fieldLabelColor = isDarkTheme ? Colors.white70 : Colors.black54;
+    final fieldBorderColor = isDarkTheme ? Colors.white24 : Colors.black26;
+    final fieldFocusColor = isDarkTheme
+        ? const Color.fromARGB(255, 126, 215, 181)
+        : const Color.fromARGB(255, 20, 110, 80);
+
+    InputDecoration fieldDecoration(String label) {
+      return InputDecoration(
+        labelText: label,
+        labelStyle: TextStyle(color: fieldLabelColor),
+        enabledBorder: UnderlineInputBorder(
+          borderSide: BorderSide(color: fieldBorderColor),
+        ),
+        focusedBorder: UnderlineInputBorder(
+          borderSide: BorderSide(color: fieldFocusColor, width: 1.5),
+        ),
+      );
+    }
+
     final formKey = GlobalKey<FormState>();
     final currentPasswordController = TextEditingController();
     final newPasswordController = TextEditingController();
@@ -557,12 +736,12 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                       margin: EdgeInsets.zero,
                       padding: const EdgeInsets.fromLTRB(20, 20, 20, 16),
                       decoration: BoxDecoration(
-                        color: const Color.fromARGB(255, 230, 247, 239),
+                        color: sheetBackground,
                         borderRadius: const BorderRadius.vertical(
                           top: Radius.circular(24),
                         ),
                         border: Border.all(
-                          color: const Color.fromARGB(255, 178, 223, 205),
+                          color: sheetBorder,
                         ),
                       ),
                       child: SingleChildScrollView(
@@ -572,19 +751,20 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                           mainAxisSize: MainAxisSize.min,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Text(
+                            Text(
                               'Change Password',
                               style: TextStyle(
                                 fontSize: 20,
                                 fontWeight: FontWeight.w700,
+                                color: titleColor,
                               ),
                             ),
                             const SizedBox(height: 16),
                             TextFormField(
                               controller: currentPasswordController,
-                              decoration: const InputDecoration(
-                                labelText: 'Current Password',
-                              ),
+                              style: TextStyle(color: fieldTextColor),
+                              cursorColor: fieldFocusColor,
+                              decoration: fieldDecoration('Current Password'),
                               obscureText: true,
                               validator: (value) {
                                 final password = (value ?? '').trim();
@@ -600,9 +780,9 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                             const SizedBox(height: 12),
                             TextFormField(
                               controller: newPasswordController,
-                              decoration: const InputDecoration(
-                                labelText: 'New Password',
-                              ),
+                              style: TextStyle(color: fieldTextColor),
+                              cursorColor: fieldFocusColor,
+                              decoration: fieldDecoration('New Password'),
                               obscureText: true,
                               validator: (value) {
                                 final password = (value ?? '').trim();
@@ -626,9 +806,9 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                             const SizedBox(height: 12),
                             TextFormField(
                               controller: confirmPasswordController,
-                              decoration: const InputDecoration(
-                                labelText: 'Confirm Password',
-                              ),
+                              style: TextStyle(color: fieldTextColor),
+                              cursorColor: fieldFocusColor,
+                              decoration: fieldDecoration('Confirm Password'),
                               obscureText: true,
                               validator: (value) {
                                 final confirm = (value ?? '').trim();
@@ -647,6 +827,9 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                               children: [
                                 TextButton(
                                   onPressed: () => Navigator.pop(sheetContext),
+                                  style: TextButton.styleFrom(
+                                    foregroundColor: fieldFocusColor,
+                                  ),
                                   child: const Text('Cancel'),
                                 ),
                                 const SizedBox(width: 8),
@@ -678,8 +861,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                                     );
                                   },
                                   style: ElevatedButton.styleFrom(
-                                    backgroundColor:
-                                        const Color.fromARGB(255, 20, 110, 80),
+                                    backgroundColor: fieldFocusColor,
                                     foregroundColor: Colors.white,
                                   ),
                                   child: const Text('Update'),
