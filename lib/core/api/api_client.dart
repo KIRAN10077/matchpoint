@@ -148,20 +148,13 @@ class _AuthInterceptor extends Interceptor {
     RequestOptions options,
     RequestInterceptorHandler handler,
   ) async {
-    // Skip auth for public endpoints
-    final publicEndpoints = [
-      ApiEndpoints.customerLogin,
-    ];
+    final isPublicEndpoint =
+        options.path == ApiEndpoints.authLogin ||
+        options.path == ApiEndpoints.authRegister ||
+        options.path == ApiEndpoints.authForgotPassword ||
+        options.path == ApiEndpoints.authResetPassword;
 
-    final isPublicGet =
-        options.method == 'GET' &&
-        publicEndpoints.any((endpoint) => options.path.startsWith(endpoint));
-
-    final isAuthEndpoint =
-        options.path == ApiEndpoints.customerLogin ||
-        options.path == ApiEndpoints.customers;
-
-    if (!isPublicGet && !isAuthEndpoint) {
+    if (!isPublicEndpoint) {
       final token = await _storage.read(key: _tokenKey);
       if (token != null) {
         options.headers['Authorization'] = 'Bearer $token';
