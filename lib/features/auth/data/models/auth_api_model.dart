@@ -31,7 +31,7 @@ factory AuthApiModel.fromJson(Map<String, dynamic> json) {
     id: json['_id']?.toString(),
     fullName: json['name'] ?? '',
     email: json['email'] ?? '',
-    username: json['username'] ?? '',
+    username: json['username'] ?? json['name'] ?? '',
     password: json['password'], // keep nullable
   );
 }
