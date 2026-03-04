@@ -7,6 +7,7 @@ class FakeUserSessionService implements UserSessionService {
   String? _email = 'test@gmail.com';
   String? _fullName = 'Test User';
   String? _token = 'token';
+  String? _profileImageUrl;
 
   @override
   String? getCurrentUserFullName() => _fullName;
@@ -29,6 +30,14 @@ class FakeUserSessionService implements UserSessionService {
   }
 
   @override
+  String? getProfileImageUrl() => _profileImageUrl;
+
+  @override
+  Future<void> saveProfileImageUrl(String imageUrl) async {
+    _profileImageUrl = imageUrl;
+  }
+
+  @override
   Future<void> saveUserSession({
     required String userId,
     required String email,
@@ -48,5 +57,6 @@ class FakeUserSessionService implements UserSessionService {
     _email = null;
     _fullName = null;
     _token = null;
+    _profileImageUrl = null;
   }
 }

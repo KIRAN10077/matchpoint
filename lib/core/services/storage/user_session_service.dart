@@ -22,6 +22,7 @@ class UserSessionService {
   static const String _keyUserId = 'user_id';
   static const String _keyUserEmail = 'user_email';
   static const String _keyUserFullName = 'user_full_name';
+  static const String _keyProfileImageUrl = 'profile_image_url';
   static const String _keyToken = 'auth_token';
 
   UserSessionService({required SharedPreferences prefs}) : _prefs = prefs;
@@ -59,6 +60,14 @@ class UserSessionService {
     return _prefs.getString(_keyUserFullName);
   }
 
+  String? getProfileImageUrl() {
+    return _prefs.getString(_keyProfileImageUrl);
+  }
+
+  Future<void> saveProfileImageUrl(String imageUrl) async {
+    await _prefs.setString(_keyProfileImageUrl, imageUrl);
+  }
+
 
   // Save token
   Future<void> saveToken(String token) async {
@@ -77,6 +86,7 @@ class UserSessionService {
     await _prefs.remove(_keyUserId);
     await _prefs.remove(_keyUserEmail);
     await _prefs.remove(_keyUserFullName);
+    await _prefs.remove(_keyProfileImageUrl);
     await _secureStorage.delete(key: _keyToken);
   }
 }
