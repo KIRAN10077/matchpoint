@@ -1,8 +1,10 @@
 import 'package:matchpoint/features/auth/presentation/pages/signup_screen.dart';
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:local_auth/local_auth.dart';
 import 'package:matchpoint/core/providers/profile_provider.dart';
 import 'package:matchpoint/core/providers/theme_mode_provider.dart';
 import 'package:matchpoint/core/services/storage/user_session_service.dart';
@@ -15,10 +17,98 @@ class ProfileScreen extends ConsumerStatefulWidget {
 }
 
 class _ProfileScreenState extends ConsumerState<ProfileScreen> {
+  bool _biometricsEnabled = false;
+  final LocalAuthentication _localAuth = LocalAuthentication();
+
   @override
   void initState() {
     super.initState();
-    Future.microtask(() => ref.read(profileProvider.notifier).loadProfile());
+    Future.microtask(() {
+      ref.read(profileProvider.notifier).loadProfile();
+      final session = ref.read(userSessionServiceProvider);
+      if (!mounted) return;
+      setState(() {
+        _biometricsEnabled = session.isBiometricsEnabled();
+      });
+    });
+  }
+
+  Future<void> _onBiometricsToggle(
+    UserSessionService session,
+    bool value,
+  ) async {
+    if (!value) {
+      setState(() {
+        _biometricsEnabled = false;
+      });
+      await session.setBiometricsEnabled(false);
+      _showSnack('Biometrics disabled');
+      return;
+    }
+
+    try {
+      final canCheck = await _localAuth.canCheckBiometrics;
+      final supported = await _localAuth.isDeviceSupported();
+      if (!canCheck || !supported) {
+        if (!mounted) return;
+        setState(() {
+          _biometricsEnabled = false;
+        });
+        _showSnack('Biometric authentication is not available on this device.');
+        return;
+      }
+
+      final availableBiometrics = await _localAuth.getAvailableBiometrics();
+      if (availableBiometrics.isEmpty) {
+        if (!mounted) return;
+        setState(() {
+          _biometricsEnabled = false;
+        });
+        _showSnack('No biometrics are enrolled on this device.');
+        return;
+      }
+
+      final authenticated = await _localAuth.authenticate(
+        localizedReason: 'Authenticate to enable biometric login',
+        options: const AuthenticationOptions(
+          biometricOnly: true,
+          stickyAuth: true,
+        ),
+      );
+
+      if (!mounted) return;
+
+      if (!authenticated) {
+        setState(() {
+          _biometricsEnabled = false;
+        });
+        _showSnack('Biometric verification cancelled.');
+        return;
+      }
+
+      setState(() {
+        _biometricsEnabled = true;
+      });
+      await session.setBiometricsEnabled(true);
+      _showSnack('Biometrics enabled successfully.');
+    } on PlatformException {
+      if (!mounted) return;
+      setState(() {
+        _biometricsEnabled = false;
+      });
+      _showSnack('Unable to enable biometrics right now.');
+    }
+  }
+
+  void _showSnack(String message) {
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        behavior: SnackBarBehavior.floating,
+      ),
+    );
   }
 
   @override
@@ -234,6 +324,45 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                 color: cardColor,
                 child: ListTile(
                   leading: Icon(
+                    _biometricsEnabled ? Icons.fingerprint : Icons.fingerprint_outlined,
+                    color: iconColor,
+                  ),
+                  title: Text(
+                    "Enable Biometrics",
+                    style: TextStyle(
+                      fontWeight: FontWeight.w700,
+                      color: titleColor,
+                    ),
+                  ),
+                  subtitle: Text(
+                    _biometricsEnabled ? "Biometrics enabled" : "Biometrics disabled",
+                    style: TextStyle(
+                      color: subtitleColor,
+                    ),
+                  ),
+                  trailing: Switch(
+                    value: _biometricsEnabled,
+                    onChanged: (value) async {
+                      await _onBiometricsToggle(session, value);
+                    },
+                    activeThumbColor: iconColor,
+                  ),
+                ),
+              ),
+
+              const SizedBox(height: 12),
+
+              Card(
+                elevation: 3,
+                shadowColor: isDarkTheme
+                    ? Colors.black26
+                    : const Color.fromARGB(70, 16, 94, 67),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(18),
+                ),
+                color: cardColor,
+                child: ListTile(
+                  leading: Icon(
                     isDarkMode ? Icons.dark_mode : Icons.light_mode,
                     color: iconColor,
                   ),
@@ -255,7 +384,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                     onChanged: (_) {
                       ref.read(themeModeProvider.notifier).toggle();
                     },
-                    activeColor: iconColor,
+                    activeThumbColor: iconColor,
                   ),
                 ),
               ),
@@ -299,7 +428,9 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                     final shouldLogout = await _showLogoutConfirmation(context);
                     if (!shouldLogout) return;
 
-                    await session.clearSession();
+                    await session.clearSession(
+                      preserveBiometricLogin: session.isBiometricsEnabled(),
+                    );
                     ref.read(profileProvider.notifier).clear();
                     if (!mounted) return;
                     navigator.pushReplacement(
