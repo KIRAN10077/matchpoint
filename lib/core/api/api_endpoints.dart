@@ -5,15 +5,25 @@ class ApiEndpoints {
   ApiEndpoints._();
 
   // Configuration
-  static const bool isPhysicalDevice = false;
-  static const String _ipAddress = '192.168.1.78';
+  // Default Android target is a physical device on the same LAN.
+  // Set `USE_ANDROID_EMULATOR_HOST=true` for Android emulator.
+  static const bool useAndroidEmulatorHost = bool.fromEnvironment(
+    'USE_ANDROID_EMULATOR_HOST',
+    defaultValue: false,
+  );
+  static const String _ipAddress = '172.26.0.111';
   static const int _port = 5000;
+  static const String _apiHostOverride = String.fromEnvironment('API_HOST', defaultValue: '');
 
   // Base URLs
   static String get _host {
-    if (isPhysicalDevice) return _ipAddress;
+    // Allows host override without changing source code:
+    // flutter run --dart-define API_HOST=192.168.1.78
+    if (_apiHostOverride.trim().isNotEmpty) return _apiHostOverride.trim();
     if (kIsWeb || Platform.isIOS) return 'localhost';
-    if (Platform.isAndroid) return '10.0.2.2';
+    if (Platform.isAndroid) {
+      return useAndroidEmulatorHost ? '10.0.2.2' : _ipAddress;
+    }
     return 'localhost';
   }
 
