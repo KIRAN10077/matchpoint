@@ -24,6 +24,7 @@ class UserSessionService {
   static const String _keyUserFullName = 'user_full_name';
   static const String _keyProfileImageUrl = 'profile_image_url';
   static const String _keyToken = 'auth_token';
+  static const String _keyBiometricsEnabled = 'biometrics_enabled';
 
   UserSessionService({required SharedPreferences prefs}) : _prefs = prefs;
 
@@ -43,6 +44,10 @@ class UserSessionService {
   // Check if user is logged in
   bool isLoggedIn() {
     return _prefs.getBool(_keyIsLoggedIn) ?? false;
+  }
+
+  Future<void> setLoggedIn(bool value) async {
+    await _prefs.setBool(_keyIsLoggedIn, value);
   }
 
   // Get current user ID
@@ -68,6 +73,14 @@ class UserSessionService {
     await _prefs.setString(_keyProfileImageUrl, imageUrl);
   }
 
+  bool isBiometricsEnabled() {
+    return _prefs.getBool(_keyBiometricsEnabled) ?? false;
+  }
+
+  Future<void> setBiometricsEnabled(bool enabled) async {
+    await _prefs.setBool(_keyBiometricsEnabled, enabled);
+  }
+
 
   // Save token
   Future<void> saveToken(String token) async {
@@ -81,12 +94,15 @@ class UserSessionService {
 
 
   // Clear user session (logout)
-  Future<void> clearSession() async {
+  Future<void> clearSession({bool preserveBiometricLogin = false}) async {
     await _prefs.remove(_keyIsLoggedIn);
-    await _prefs.remove(_keyUserId);
-    await _prefs.remove(_keyUserEmail);
-    await _prefs.remove(_keyUserFullName);
     await _prefs.remove(_keyProfileImageUrl);
-    await _secureStorage.delete(key: _keyToken);
+
+    if (!preserveBiometricLogin) {
+      await _prefs.remove(_keyUserId);
+      await _prefs.remove(_keyUserEmail);
+      await _prefs.remove(_keyUserFullName);
+      await _secureStorage.delete(key: _keyToken);
+    }
   }
 }
