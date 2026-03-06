@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
+import 'package:local_auth/local_auth.dart';
+import 'package:matchpoint/core/services/storage/user_session_service.dart';
 
 import 'signup_screen.dart';
 import '../../../dashboard/presentation/pages/home_screen.dart';
@@ -17,6 +21,8 @@ class LoginScreen extends ConsumerStatefulWidget {
 class _LoginScreenState extends ConsumerState<LoginScreen> {
   final _emailCtrl = TextEditingController();
   final _passCtrl = TextEditingController();
+  final LocalAuthentication _localAuth = LocalAuthentication();
+  bool _biometricsEnabled = false;
 
   @override
   void initState() {
@@ -37,6 +43,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         );
       }
     });
+
+    Future.microtask(_loadBiometricPreference);
   }
 
   @override
@@ -44,6 +52,54 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     _emailCtrl.dispose();
     _passCtrl.dispose();
     super.dispose();
+  }
+
+  Future<void> _loadBiometricPreference() async {
+    final session = ref.read(userSessionServiceProvider);
+    if (!mounted) return;
+    setState(() {
+      _biometricsEnabled = session.isBiometricsEnabled();
+    });
+  }
+
+  Future<void> _loginWithBiometrics() async {
+    final session = ref.read(userSessionServiceProvider);
+
+    try {
+      final canCheck = await _localAuth.canCheckBiometrics;
+      final supported = await _localAuth.isDeviceSupported();
+
+      if (!canCheck || !supported) {
+        _showSnack('Biometric authentication is not available on this device.');
+        return;
+      }
+
+      final authenticated = await _localAuth.authenticate(
+        localizedReason: 'Authenticate to login to MatchPoint',
+        options: const AuthenticationOptions(
+          biometricOnly: true,
+          stickyAuth: true,
+        ),
+      );
+
+      if (!authenticated) return;
+
+      final token = await session.getToken();
+      if (token == null || token.isEmpty || JwtDecoder.isExpired(token)) {
+        _showSnack('Saved biometric session expired. Please login with email/password.');
+        return;
+      }
+
+      await session.setLoggedIn(true);
+
+      if (!mounted) return;
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => const HomeScreen()),
+      );
+    } on PlatformException catch (_) {
+      _showSnack('Unable to use biometrics right now.');
+    }
   }
 
   InputDecoration _decoration(String hint, IconData icon) {
@@ -271,6 +327,26 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                   ),
                           ),
                         ),
+
+                        if (_biometricsEnabled) ...[
+                          const SizedBox(height: 12),
+                          SizedBox(
+                            width: double.infinity,
+                            height: 50,
+                            child: OutlinedButton.icon(
+                              onPressed: isLoading ? null : _loginWithBiometrics,
+                              icon: const Icon(Icons.fingerprint),
+                              label: const Text('Tap to login with fingerprint'),
+                              style: OutlinedButton.styleFrom(
+                                foregroundColor: accent,
+                                side: BorderSide(color: accent),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(14),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
                       ],
                     ),
                   ),
