@@ -8,6 +8,7 @@ class FakeUserSessionService implements UserSessionService {
   String? _fullName = 'Test User';
   String? _token = 'token';
   String? _profileImageUrl;
+  bool _biometricsEnabled = false;
 
   @override
   String? getCurrentUserFullName() => _fullName;
@@ -20,6 +21,15 @@ class FakeUserSessionService implements UserSessionService {
 
   @override
   bool isLoggedIn() => _token != null;
+
+  @override
+  Future<void> setLoggedIn(bool value) async {
+    if (!value) {
+      _token = null;
+      return;
+    }
+    _token ??= 'token';
+  }
 
   @override
   Future<String?> getToken() async => _token;
@@ -38,6 +48,14 @@ class FakeUserSessionService implements UserSessionService {
   }
 
   @override
+  bool isBiometricsEnabled() => _biometricsEnabled;
+
+  @override
+  Future<void> setBiometricsEnabled(bool enabled) async {
+    _biometricsEnabled = enabled;
+  }
+
+  @override
   Future<void> saveUserSession({
     required String userId,
     required String email,
@@ -51,12 +69,15 @@ class FakeUserSessionService implements UserSessionService {
   }
 
   @override
-  Future<void> clearSession() async {
+  Future<void> clearSession({bool preserveBiometricLogin = false}) async {
     cleared = true;
-    _userId = null;
-    _email = null;
-    _fullName = null;
-    _token = null;
+    if (!preserveBiometricLogin) {
+      _userId = null;
+      _email = null;
+      _fullName = null;
+      _token = null;
+    }
     _profileImageUrl = null;
+    _biometricsEnabled = false;
   }
 }
