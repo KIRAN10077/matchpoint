@@ -7,6 +7,7 @@ import 'package:matchpoint/features/auth/data/models/auth_api_model.dart';
 import 'package:matchpoint/features/auth/data/models/auth_hive_model.dart';
 import 'package:matchpoint/features/auth/domain/entities/auth_entity.dart';
 import 'package:matchpoint/features/auth/domain/repositories/auth_repository.dart';
+import 'package:matchpoint/core/api/api_endpoints.dart';
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 
@@ -66,8 +67,26 @@ class AuthRepository implements IAuthRepository{
         }
         return const Left(ApiFailure(message: "Invalid email or password"));
       } on DioException catch (e) {
+        final isConnectivityFailure =
+          e.type == DioExceptionType.connectionError ||
+          e.type == DioExceptionType.connectionTimeout ||
+          e.type == DioExceptionType.receiveTimeout;
+
+        String? apiMessage;
+        final responseData = e.response?.data;
+        if (responseData is Map<String, dynamic>) {
+          apiMessage = responseData['message']?.toString();
+        }
+
+        final fallbackMessage = isConnectivityFailure
+          ? 'Cannot reach server at ${ApiEndpoints.serverUrl}. '
+            'If you are using Android emulator with a backend running on your machine, run with '
+            '--dart-define=USE_ANDROID_EMULATOR_HOST=true '
+            'or set --dart-define=API_HOST=<your-machine-ip>.'
+          : 'Login failed';
+
         return Left(ApiFailure(
-          message: e.response?.data?['message'] ?? 'Login failed',
+          message: apiMessage ?? fallbackMessage,
           statusCode: e.response?.statusCode,
           ));
       } catch (e) {

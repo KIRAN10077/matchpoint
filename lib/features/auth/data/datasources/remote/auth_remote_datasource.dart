@@ -6,6 +6,7 @@ import 'package:matchpoint/features/auth/data/datasources/auth_datasource.dart';
 import 'package:matchpoint/features/auth/data/models/auth_api_model.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
+import 'package:dio/dio.dart';
 
 final authRemoteDatasourceProvider = Provider<IAuthRemoteDataSource>((ref) {
   return AuthRemoteDatasource(
@@ -33,12 +34,18 @@ class AuthRemoteDatasource implements IAuthRemoteDataSource{
 
   @override
   Future<AuthApiModel?> login(String email, String password) async {
+    final payload = {
+      'email': email,
+      'password': password,
+    };
+
     final response = await _apiClient.post(
       ApiEndpoints.authLogin,
-      data: {
-        'email': email,
-        'password': password,
-      },
+      data: payload,
+      options: Options(
+        receiveTimeout: const Duration(seconds: 15),
+        extra: const {'skipRetry': true},
+      ),
     );
 
     if (response.data['success'] == true) {

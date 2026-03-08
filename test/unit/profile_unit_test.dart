@@ -39,4 +39,49 @@ void main() {
 
     expect(controller.state.error, isNull);
   });
+
+  test('ProfileState.copyWith: updates loading only', () {
+    const original = ProfileState(
+      loading: false,
+      imageUrl: 'https://example.com/a.png',
+      error: 'old error',
+    );
+
+    final next = original.copyWith(loading: true);
+
+    expect(next.loading, true);
+    expect(next.imageUrl, 'https://example.com/a.png');
+    expect(next.error, isNull);
+  });
+
+  test('ProfileState.copyWith: replaces imageUrl when provided', () {
+    const original = ProfileState(imageUrl: 'https://example.com/a.png');
+
+    final next = original.copyWith(imageUrl: 'https://example.com/b.png');
+
+    expect(next.imageUrl, 'https://example.com/b.png');
+  });
+
+  test('ProfileController: starts with default state', () {
+    final dio = MockDio();
+    final session = MockUserSessionService();
+
+    final controller = ProfileController(dio, session);
+
+    expect(controller.state.loading, false);
+    expect(controller.state.imageUrl, isNull);
+    expect(controller.state.error, isNull);
+  });
+
+  test('ProfileController.clear(): idempotent on default state', () {
+    final dio = MockDio();
+    final session = MockUserSessionService();
+
+    final controller = ProfileController(dio, session);
+    controller.clear();
+
+    expect(controller.state.loading, false);
+    expect(controller.state.imageUrl, isNull);
+    expect(controller.state.error, isNull);
+  });
 }

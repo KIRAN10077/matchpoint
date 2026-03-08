@@ -174,13 +174,10 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
               ),
             ),
             child: SingleChildScrollView(
-              child: ConstrainedBox(
-                constraints: BoxConstraints(minHeight: constraints.maxHeight),
-                child: IntrinsicHeight(
-                  child: Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Column(
-                      children: [
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  children: [
               const SizedBox(height: 20),
 
               // ❌ UNCHANGED: avatar + name + email
@@ -408,7 +405,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                 ),
               ],
 
-              const Spacer(),
+              const SizedBox(height: 8),
 
               // ✅ ONLY logout button redesigned
               SizedBox(
@@ -457,9 +454,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
               ),
 
               const SizedBox(height: 16),
-                      ],
-                    ),
-                  ),
+                  ],
                 ),
               ),
             ),

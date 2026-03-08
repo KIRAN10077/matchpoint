@@ -11,12 +11,27 @@ class ApiEndpoints {
     'USE_ANDROID_EMULATOR_HOST',
     defaultValue: false,
   );
-  static const String _ipAddress = '172.26.0.111';
+  static const String _ipAddress = '192.168.1.77';
   static const int _port = 5000;
   static const String _apiHostOverride = String.fromEnvironment('API_HOST', defaultValue: '');
+  static String? _runtimeHostOverride;
+
+  static void setRuntimeHost(String host) {
+    final normalized = host.trim();
+    if (normalized.isEmpty) return;
+    _runtimeHostOverride = normalized;
+  }
+
+  static void clearRuntimeHost() {
+    _runtimeHostOverride = null;
+  }
 
   // Base URLs
   static String get _host {
+    if (_runtimeHostOverride != null && _runtimeHostOverride!.isNotEmpty) {
+      return _runtimeHostOverride!;
+    }
+
     // Allows host override without changing source code:
     // flutter run --dart-define API_HOST=192.168.1.78
     if (_apiHostOverride.trim().isNotEmpty) return _apiHostOverride.trim();

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:matchpoint/core/api/api_endpoints.dart';
 import 'package:matchpoint/features/dashboard/presentation/pages/court_booking_page.dart';
 import '../../../bottom_screens/presentation/page/booking_screen.dart';
@@ -115,6 +116,7 @@ class HomePageBody extends StatefulWidget {
 }
 
 class _HomePageBodyState extends State<HomePageBody> {
+  final FlutterSecureStorage _secureStorage = const FlutterSecureStorage();
   String _selectedSport = 'All Sports';
   String _priceSort = 'Latest';
   bool _loadingCourts = true;
@@ -199,6 +201,8 @@ class _HomePageBodyState extends State<HomePageBody> {
         _courtsError = null;
       });
 
+      final token = await _secureStorage.read(key: 'auth_token');
+
       final dio = Dio(
         BaseOptions(
           connectTimeout: ApiEndpoints.connectionTimeout,
@@ -206,8 +210,33 @@ class _HomePageBodyState extends State<HomePageBody> {
         ),
       );
 
-      final response = await dio.get('${ApiEndpoints.serverUrl}/api/courts');
-      final data = response.data['data'];
+      final response = await dio.get(
+        '${ApiEndpoints.serverUrl}/api/courts',
+        options: Options(
+          headers: token == null || token.isEmpty
+              ? null
+              : {'Authorization': 'Bearer $token'},
+          validateStatus: (status) => status != null && status < 500,
+        ),
+      );
+
+      if (response.statusCode != 200) {
+        final payload = response.data;
+        final message = payload is Map<String, dynamic>
+            ? (payload['message']?.toString() ?? 'Failed to load courts')
+            : 'Failed to load courts';
+        throw Exception(message);
+      }
+
+      final payload = response.data;
+      final dynamic data;
+      if (payload is List) {
+        data = payload;
+      } else if (payload is Map<String, dynamic>) {
+        data = payload['data'] ?? payload['courts'] ?? payload['results'];
+      } else {
+        data = null;
+      }
 
       if (data is! List) {
         throw Exception('Invalid courts response');
@@ -260,7 +289,7 @@ class _HomePageBodyState extends State<HomePageBody> {
       if (!mounted) return;
       setState(() {
         _loadingCourts = false;
-        _courtsError = 'Failed to load courts';
+        _courtsError = e.toString().replaceFirst('Exception: ', '');
       });
     }
   }

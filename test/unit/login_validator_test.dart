@@ -19,4 +19,39 @@ void main() {
       isNull,
     );
   });
+
+  test('Login: trims email before empty check', () {
+    expect(
+      AuthValidators.login(email: '   ', password: '1234567'),
+      'Please enter credentials',
+    );
+  });
+
+  test('Login: accepts valid email with surrounding spaces', () {
+    expect(
+      AuthValidators.login(email: '  test@gmail.com  ', password: '1234567'),
+      isNull,
+    );
+  });
+
+  test('Login: returns error when both fields are empty', () {
+    expect(
+      AuthValidators.login(email: '', password: ''),
+      'Please enter credentials',
+    );
+  });
+
+  test('Login: returns error when only email is provided', () {
+    expect(
+      AuthValidators.login(email: 'test@gmail.com', password: ''),
+      'Please enter credentials',
+    );
+  });
+
+  test('Login: allows whitespace-only password by current rules', () {
+    expect(
+      AuthValidators.login(email: 'test@gmail.com', password: '   '),
+      isNull,
+    );
+  });
 }

@@ -68,4 +68,55 @@ void main() {
     expect(find.byType(SignupScreen), findsOneWidget);
     expect(fakeSession.cleared, isTrue);
   });
+
+  testWidgets('Profile: renders settings action tiles', (tester) async {
+    final fakeSession = FakeUserSessionService();
+
+    await tester.pumpWidget(wrapWithApp(fakeSession: fakeSession));
+    await tester.pump();
+
+    expect(find.text('Edit Profile'), findsOneWidget);
+    expect(find.text('Change Password'), findsOneWidget);
+    expect(find.text('Enable Biometrics'), findsOneWidget);
+    expect(find.text('Theme Mode'), findsOneWidget);
+  });
+
+  testWidgets('Profile: shows biometrics disabled by default', (tester) async {
+    final fakeSession = FakeUserSessionService();
+
+    await tester.pumpWidget(wrapWithApp(fakeSession: fakeSession));
+    await tester.pump();
+
+    expect(find.text('Biometrics disabled'), findsOneWidget);
+  });
+
+  testWidgets('Profile: has two switches', (tester) async {
+    final fakeSession = FakeUserSessionService();
+
+    await tester.pumpWidget(wrapWithApp(fakeSession: fakeSession));
+    await tester.pump();
+
+    expect(find.byType(Switch), findsNWidgets(2));
+  });
+
+  testWidgets('Profile: cancel logout keeps user on profile', (tester) async {
+    final fakeSession = FakeUserSessionService();
+
+    await tester.pumpWidget(wrapWithApp(fakeSession: fakeSession));
+    await tester.pump();
+
+    await tester.ensureVisible(find.text('Logout'));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Logout').first);
+    await tester.pumpAndSettle();
+
+    expect(find.text('Confirm Logout'), findsOneWidget);
+
+    await tester.tap(find.widgetWithText(TextButton, 'Cancel'));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(ProfileScreen), findsOneWidget);
+    expect(fakeSession.cleared, isFalse);
+  });
 }

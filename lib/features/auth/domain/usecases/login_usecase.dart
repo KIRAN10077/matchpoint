@@ -13,7 +13,7 @@ class LoginUsecaseParams extends Equatable {
 
   const LoginUsecaseParams({required this.email,required this.password,});
   @override
-  List<Object?> get props => throw UnimplementedError();
+  List<Object?> get props => [email, password];
 }
 
 final loginUsecaseProvider = Provider<LoginUsecase>((ref){

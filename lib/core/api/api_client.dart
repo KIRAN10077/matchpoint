@@ -42,6 +42,19 @@ class ApiClient {
           Duration(seconds: 3),
         ],
         retryEvaluator: (error, attempt) {
+          // Allow individual requests (e.g. login) to fail fast.
+          final skipRetry = error.requestOptions.extra['skipRetry'] == true;
+          if (skipRetry) {
+            return false;
+          }
+
+          final isAuthMutation =
+              error.requestOptions.path == ApiEndpoints.authLogin ||
+              error.requestOptions.path == ApiEndpoints.authRegister;
+          if (isAuthMutation) {
+            return false;
+          }
+
           // Retry on connection errors and timeouts, not on 4xx/5xx
           return error.type == DioExceptionType.connectionTimeout ||
               error.type == DioExceptionType.sendTimeout ||

@@ -26,27 +26,34 @@ class AuthViewModel extends Notifier<AuthState> {
   }) async {
     state = state.copyWith(status: AuthStatus.loading);
 
-    final params = RegisterUsecaseParams(
-      username: username,
-      email: email,
-      password: password,
-    );
+    try {
+      final params = RegisterUsecaseParams(
+        username: username,
+        email: email,
+        password: password,
+      );
 
-    final result = await _registerUsecase(params);
+      final result = await _registerUsecase(params);
 
-    result.fold(
-      (failure) {
-        state = state.copyWith(
-          status: AuthStatus.error,
-          errorMessage: failure.message,
-        );
-      },
-      (_) {
-        state = state.copyWith(
-          status: AuthStatus.registered,
-        );
-      },
-    );
+      result.fold(
+        (failure) {
+          state = state.copyWith(
+            status: AuthStatus.error,
+            errorMessage: failure.message,
+          );
+        },
+        (_) {
+          state = state.copyWith(
+            status: AuthStatus.registered,
+          );
+        },
+      );
+    } catch (e) {
+      state = state.copyWith(
+        status: AuthStatus.error,
+        errorMessage: e.toString(),
+      );
+    }
   }
 
   Future<void> login({
@@ -55,26 +62,33 @@ class AuthViewModel extends Notifier<AuthState> {
   }) async {
     state = state.copyWith(status: AuthStatus.loading);
 
-    final params = LoginUsecaseParams(
-      email: email,
-      password: password,
-    );
+    try {
+      final params = LoginUsecaseParams(
+        email: email,
+        password: password,
+      );
 
-    final result = await _loginUsecase(params);
+      final result = await _loginUsecase(params);
 
-    result.fold(
-      (failure) {
-        state = state.copyWith(
-          status: AuthStatus.error,
-          errorMessage: failure.message,
-        );
-      },
-      (authEntity) {
-        state = state.copyWith(
-          status: AuthStatus.authenticated,
-          authEntity: authEntity,
-        );
-      },
-    );
+      result.fold(
+        (failure) {
+          state = state.copyWith(
+            status: AuthStatus.error,
+            errorMessage: failure.message,
+          );
+        },
+        (authEntity) {
+          state = state.copyWith(
+            status: AuthStatus.authenticated,
+            authEntity: authEntity,
+          );
+        },
+      );
+    } catch (e) {
+      state = state.copyWith(
+        status: AuthStatus.error,
+        errorMessage: e.toString(),
+      );
+    }
   }
 }
